@@ -11,7 +11,7 @@ trait InstallSvelteWithInertia
     /**
      * Install the inertia stack with Laravel module using Svelte.
      */
-    public function installModuleInertiaSvelte(): ?int
+    public function installModuleInertiaSvelte(string $moduleName): ?int
     {
         // Install Inertia and Laravel Modules
         if (! $this->requireComposerPackages([
@@ -24,16 +24,14 @@ trait InstallSvelteWithInertia
         }
 
         // Install or update NPM packages
-        $this->updateNodePackages(function ($packages) {
-            return [
-                '@inertiajs/svelte' => '^0.13.0',
-                '@vitejs/plugin-svelte' => '^4.0.0',
-                'autoprefixer' => '^10.4.12',
-                'postcss' => '^8.4.31',
-                'svelte' => '^4.0.0',
-                'tailwindcss' => '^3.2.1',
-            ] + $packages;
-        });
+        $this->updateNodePackages(fn ($packages) => [
+            '@inertiajs/svelte' => '^0.13.0',
+            '@vitejs/plugin-svelte' => '^4.0.0',
+            'autoprefixer' => '^10.4.12',
+            'postcss' => '^8.4.31',
+            'svelte' => '^4.0.0',
+            'tailwindcss' => '^3.2.1',
+        ] + $packages);
 
         // Providers...
         (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-common/app/Providers', app_path('Providers'));

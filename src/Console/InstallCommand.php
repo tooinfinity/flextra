@@ -9,19 +9,21 @@ use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
-use Illuminate\Support\Facades\File;
 
-use function Laravel\Prompts\select;
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\multiselect;
-#[AsCommand(name: 'flextra:install')]  // Flextra: Inspired by "Flexibility" and "Extra", perfect for multi-framework tools.
+use function Laravel\Prompts\select;
+
+#[AsCommand(name: 'flextra:install')] // Flextra: Inspired by "Flexibility" and "Extra", perfect for multi-framework tools.
 final class InstallCommand extends Command implements PromptsForMissingInput
 {
     use InstallReactWithInertia, InstallSvelteWithInertia, InstallVueWithInertia;
@@ -47,16 +49,27 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     protected $description = 'Install the vetra with the Inertia stack and laravel Modules';
 
     /**
+     * The name of the module.
+     * I prefer auth because it's a must-have module for breeze to live
+     */
+    private string $moduleName = 'Auth';
+
+    /**
      * Execute the console command.
      */
     public function handle(): ?int
     {
+        $moduleNameInput = $this->ask('Enter the name of the module');
+        $this->moduleName = $moduleNameInput ?? $this->moduleName;
         if ($this->argument('stack') === 'vue') {
-            return $this->installModuleInertiaVue();
-        } elseif ($this->argument('stack') === 'react') {
-            return $this->installModuleInertiaReact();
-        } elseif ($this->argument('stack') === 'svelte') {
-            return $this->installModuleInertiaSvelte();
+            return $this->installModuleInertiaVue($this->moduleName);
+        }
+        if ($this->argument('stack') === 'react') {
+            return $this->installModuleInertiaReact($this->moduleName);
+        }
+
+        if ($this->argument('stack') === 'svelte') {
+            return $this->installModuleInertiaSvelte($this->moduleName);
         }
 
         $this->components->error('Invalid stack. Supported stacks are [blade], [livewire], [livewire-functional], [react], [vue], and [api].');
@@ -65,11 +78,54 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     }
 
     /**
-     * Update the dependencies in the "package.json" file.
-     *
-     * @param  bool  $dev
+     * Prompt for missing arguments to the command.
      */
-    protected static function updateNodePackages(callable $callback, $dev = true): void
+    protected function promptForMissingArgumentsUsing(): array
+    {
+        return [
+            'stack' => fn (): int|string => select(
+                label: 'Which stack do you want to install?',
+                options: [
+                    'react' => 'Inertia React with Laravel Modules',
+                    'vue' => 'Inertia Vue with Laravel Modules',
+                    'svelte' => 'Inertia Svelte with Laravel Modules',
+                ],
+                scroll: 3,
+            ),
+        ];
+    }
+
+    /**
+     * Interact further with the user if they were prompted for missing arguments.
+     */
+    protected function afterPromptingForMissingArguments(InputInterface $input, OutputInterface $output): void
+    {
+        $stack = $input->getArgument('stack');
+
+        if (in_array($stack, ['react', 'vue', 'svelte'])) {
+            collect(multiselect(
+                label: 'Would you like any optional features?',
+                options: [
+                    'dark' => 'Dark mode',
+                    'ssr' => 'Inertia SSR',
+                    'typescript' => 'TypeScript',
+                    'eslint' => 'ESLint with Prettier',
+                ],
+                hint: 'Use the space bar to select options.'
+            ))->each(fn ($option) => $input->setOption($option, true));
+        }
+
+        $input->setOption('pest', select(
+            label: 'Which testing framework do you prefer?',
+            options: ['Pest', 'PHPUnit'],
+            default: 'Pest',
+        ) === 'Pest');
+    }
+
+    /**
+     * Update the dependencies in the "package.json" file.
+     */
+    private function updateNodePackages(callable $callback, bool $dev = true): void
     {
         if (! file_exists(base_path('package.json'))) {
             return;
@@ -95,7 +151,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     /**
      * Update the scripts in the "package.json" file.
      */
-    protected static function updateNodeScripts(callable $callback): void
+    private function updateNodeScripts(callable $callback): void
     {
         if (! file_exists(base_path('package.json'))) {
             return;
@@ -116,9 +172,9 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     /**
      * Delete the "node_modules" directory and remove the associated lock files.
      */
-    protected static function flushNodeModules(): void
+    private function flushNodeModules(): void
     {
-        tap(new Filesystem, function ($files) {
+        tap(new Filesystem, function ($files): void {
             $files->deleteDirectory(base_path('node_modules'));
 
             $files->delete(base_path('pnpm-lock.yaml'));
@@ -132,7 +188,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     /**
      * Installs the given Composer Packages into the application.
      */
-    protected function requireComposerPackages(array $packages, bool $asDev = false): bool
+    private function requireComposerPackages(array $packages, bool $asDev = false): bool
     {
         $composer = $this->option('composer');
 
@@ -148,7 +204,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
 
         return (new Process($command, base_path(), ['COMPOSER_MEMORY_LIMIT' => '-1']))
             ->setTimeout(null)
-            ->run(function ($type, $output) {
+            ->run(function ($type, $output): void {
                 $this->output->write($output);
             }) === 0;
     }
@@ -156,7 +212,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     /**
      * Replace a given string within a given file.
      */
-    protected function replaceInFile(string $search, string $replace, string $path): void
+    private function replaceInFile(string $search, string $replace, string $path): void
     {
         file_put_contents($path, str_replace($search, $replace, file_get_contents($path)));
     }
@@ -164,7 +220,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     /**
      * Run the given stack commands.
      */
-    protected function runCommands(array $commands): void
+    private function runCommands(array $commands): void
     {
         $process = Process::fromShellCommandline(implode(' && ', $commands), null, null, null, null);
         if ('\\' !== DIRECTORY_SEPARATOR && file_exists('/dev/tty') && is_readable('/dev/tty')) {
@@ -174,44 +230,27 @@ final class InstallCommand extends Command implements PromptsForMissingInput
                 $this->output->writeln('  <bg=yellow;fg=black> WARN </> '.$e->getMessage().PHP_EOL);
             }
         }
-        $process->run(function ($type, $line) {
+        $process->run(function ($type, string $line): void {
             $this->output->write('    '.$line);
         });
     }
 
     /**
-     * Prompt for missing arguments to the command.
-     */
-    protected function promptForMissingArgumentsUsing(): array
-    {
-        return [
-            'stack' => fn () => select(
-                label: 'Which stack do you want to install?',
-                options: [
-                    'react' => 'Inertia React with Laravel Modules',
-                    'vue' => 'Inertia Vue with Laravel Modules',
-                    'svelte' => 'Inertia Svelte with Laravel Modules',
-                ],
-                scroll: 3,
-            ),
-
-        ];
-    }
-
-    /**
      * install module-inertia-react tests from stub
      */
-    protected function installTests(): bool
+    private function installTests(): bool
     {
         (new Filesystem)->ensureDirectoryExists(base_path('tests/Feature'));
-        $stub = match ($this->argument('stack')) {
+
+        $stubStack = match ($this->argument('stack')) {
             'react' => 'react',
             'vue' => 'vue',
             'svelte' => 'svelte',
+            default => throw new InvalidArgumentException('Invalid stack. Supported stacks are [react], [vue], and [svelte].'),
         };
         if ($this->option('pest') || $this->isUsingPest()) {
             if ($this->hasComposerPackage('phpunit/phpunit')) {
-                $this->removeComposerPackage('phpunit/phpunit', true);
+                $this->removeComposerPackage((array) 'phpunit/phpunit', true);
             }
             if (! $this->requireComposerPackages(['pestphp/pest', 'pestphp/pest-plugin-laravel'], true)) {
                 return false;
@@ -229,14 +268,14 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     /**
      * Install the given middleware names into the application.
      */
-    protected function installMiddleware(array|string $names, string $group = 'web', string $modifier = 'append'): void
+    private function installMiddleware(array|string $names, string $group = 'web', string $modifier = 'append'): void
     {
         $bootstrapApp = file_get_contents(base_path('bootstrap/app.php'));
 
-        $names = collect(Arr::wrap($names))
-            ->filter(fn ($name) => ! Str::contains($bootstrapApp, $name))
-            ->whenNotEmpty(function ($names) use ($bootstrapApp, $group, $modifier) {
-                $names = $names->map(fn ($name) => "$name")->implode(','.PHP_EOL.'            ');
+        collect(Arr::wrap($names))
+            ->filter(fn ($name): bool => ! Str::contains($bootstrapApp, $name))
+            ->whenNotEmpty(function ($names) use ($bootstrapApp, $group, $modifier): void {
+                $names = $names->map(fn ($name): string => "$name")->implode(','.PHP_EOL.'            ');
 
                 $bootstrapApp = str_replace(
                     '->withMiddleware(function (Middleware $middleware) {',
@@ -255,14 +294,14 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     /**
      * Install the given middleware aliases into the application.
      */
-    protected function installMiddlewareAliases(array $aliases): void
+    private function installMiddlewareAliases(array $aliases): void
     {
         $bootstrapApp = file_get_contents(base_path('bootstrap/app.php'));
 
-        $aliases = collect($aliases)
-            ->filter(fn ($alias) => ! Str::contains($bootstrapApp, $alias))
-            ->whenNotEmpty(function ($aliases) use ($bootstrapApp) {
-                $aliases = $aliases->map(fn ($name, $alias) => "'$alias' => $name")->implode(','.PHP_EOL.'            ');
+        collect($aliases)
+            ->filter(fn ($alias): bool => ! Str::contains($bootstrapApp, $alias))
+            ->whenNotEmpty(function ($aliases) use ($bootstrapApp): void {
+                $aliases = $aliases->map(fn ($name, $alias): string => "'$alias' => $name")->implode(','.PHP_EOL.'            ');
 
                 $bootstrapApp = str_replace(
                     '->withMiddleware(function (Middleware $middleware) {',
@@ -281,7 +320,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     /**
      * Configure Ziggy for SSR.
      */
-    protected function configureZiggyForSsr(): void
+    private function configureZiggyForSsr(): void
     {
         $this->replaceInFile(
             <<<'EOT'
@@ -345,11 +384,60 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     /**
      * Remove Tailwind dark classes from the given files.
      */
-    protected function removeDarkClasses(Finder $finder): void
+    private function removeDarkClasses(Finder $finder): void
     {
         foreach ($finder as $file) {
             file_put_contents($file->getPathname(), preg_replace('/\sdark:[^\s"\']+/', '', $file->getContents()));
         }
+    }
+
+    /**
+     * Install Module Dependencies
+     */
+    private function installModuleDependencies(): void
+    {
+        // Check if laravel Modules installed and install it
+        if (! InstalledVersions::isInstalled('nwidart/laravel-modules')) {
+            $this->addToComposer('config', 'allow-plugins', [
+                'wikimedia/composer-merge-plugin' => true,
+                'pestphp/pest-plugin' => true,
+            ]);
+            $this->runCommands(['composer require nwidart/laravel-modules']);
+            $this->runCommands(['php artisan vendor:publish --provider="Nwidart\Modules\LaravelModulesServiceProvider"']);
+            $this->addToComposer('extra', 'merge-plugin', [
+                'include' => [
+                    'Modules/*/composer.json',
+                ],
+            ]);
+            $this->runCommands(['composer dump-autoload']);
+        }
+        // Prompt the user to either make the Auth module but, I prefer auth
+        // because it's a must-have module for breeze to live
+        if (confirm('Do you want to create a module?')) {
+            $this->runCommands(["php artisan module:make {$this->moduleName}"]);
+        }
+    }
+
+    /**
+     * Adding code to composer Extra
+     */
+    private function addToComposer(string $parent, string $key, array $value): void
+    {
+        $composerJsonPath = base_path('composer.json');
+
+        // Read and decode composer.json
+        $composerJson = json_decode(File::get($composerJsonPath), true);
+
+        // Ensure the 'extra' section exists
+        if (! isset($composerJson[$parent])) {
+            $composerJson[$parent] = [];
+        }
+
+        // Add or update the key-value pair
+        $composerJson[$parent][$key] = $value;
+
+        // Encode the array back to JSON and save it
+        File::put($composerJsonPath, json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     }
 
     /**
@@ -382,102 +470,16 @@ final class InstallCommand extends Command implements PromptsForMissingInput
 
         return (new Process($command, base_path(), ['COMPOSER_MEMORY_LIMIT' => '-1']))
             ->setTimeout(null)
-            ->run(function ($type, $output) {
+            ->run(function ($type, $output): void {
                 $this->output->write($output);
             }) === 0;
     }
 
     /**
-     * Interact further with the user if they were prompted for missing arguments.
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return void
-     */
-    protected function afterPromptingForMissingArguments(InputInterface $input, OutputInterface $output): void
-    {
-        $stack = $input->getArgument('stack');
-
-        if (in_array($stack, ['react', 'vue', 'svelte'])) {
-            collect(multiselect(
-                label: 'Would you like any optional features?',
-                options: [
-                    'dark' => 'Dark mode',
-                    'ssr' => 'Inertia SSR',
-                    'typescript' => 'TypeScript',
-                    'eslint' => 'ESLint with Prettier',
-                ],
-                hint: 'Use the space bar to select options.'
-            ))->each(fn ($option) => $input->setOption($option, true));
-        }
-
-        $input->setOption('pest', select(
-                label: 'Which testing framework do you prefer?',
-                options: ['Pest', 'PHPUnit'],
-                default: 'Pest',
-            ) === 'Pest');
-    }
-
-    /**
      * Determine if the application is using Pest.
-     * @return bool
      */
     private function isUsingPest(): bool
     {
-        // ignore phpstan
-        /** @phpstan-ignore-next-line */
         return class_exists(\Pest\TestSuite::class);
     }
-
-    /**
-     * Install Module Dependencies
-     * @return void
-     */
-    protected  function installModuleDependencies(): void
-    {
-        // Check if laravel Modules installed and install it
-        if (!InstalledVersions::isInstalled('nwidart/laravel-modules')) {
-            $this->addToComposer('config', 'allow-plugins', [
-                "wikimedia/composer-merge-plugin" => true,
-                "pestphp/pest-plugin" => true
-            ]);
-            $this->runCommands(['composer require nwidart/laravel-modules']);
-            $this->runCommands(['php artisan vendor:publish --provider="Nwidart\Modules\LaravelModulesServiceProvider"']);
-            $this->addToComposer('extra', 'merge-plugin', [
-                "include" => [
-                    "Modules/*/composer.json"
-                ]
-            ]);
-            $this->runCommands(['composer dump-autoload']);
-        }
-        $this->runCommands(['php artisan module:make Auth']);
-    }
-
-    /**
-     * Adding code to composer Extra
-     * @param string $key
-     * @param array $value
-     * @param string $parent
-     * @return void
-     */
-    protected function addToComposer(string $parent, string $key, array $value): void
-    {
-        $composerJsonPath = base_path('composer.json');
-
-        // Read and decode composer.json
-        $composerJson = json_decode(File::get($composerJsonPath), true);
-
-        // Ensure the 'extra' section exists
-        if (!isset($composerJson[$parent])) {
-            $composerJson[$parent] = [];
-        }
-
-        // Add or update the key-value pair
-        $composerJson[$parent][$key] = $value;
-
-        // Encode the array back to JSON and save it
-        File::put($composerJsonPath, json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-    }
-
-
 }

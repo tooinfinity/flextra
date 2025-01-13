@@ -10,9 +10,9 @@ use Symfony\Component\Finder\Finder;
 trait InstallVueWithInertia
 {
     /**
-     * Install the Inertia Vue Breeze stack.
+     * Install the Inertia Vue modules stack.
      */
-    protected function installModuleInertiaVue(): ?int
+    protected function installModuleInertiaVue(string $moduleName): ?int
     {
         // Install Inertia...
         if (! $this->requireComposerPackages(['inertiajs/inertia-laravel:^2.0', 'laravel/sanctum:^4.0', 'tightenco/ziggy:^2.0'])) {
@@ -20,60 +20,48 @@ trait InstallVueWithInertia
         }
 
         // NPM Packages...
-        $this->updateNodePackages(function ($packages) {
-            return [
-                '@inertiajs/vue3' => '^2.0.0',
-                '@tailwindcss/forms' => '^0.5.3',
-                '@vitejs/plugin-vue' => '^5.0.0',
-                'autoprefixer' => '^10.4.12',
-                'postcss' => '^8.4.31',
-                'tailwindcss' => '^3.2.1',
-                'vue' => '^3.4.0',
-            ] + $packages;
-        });
+        $this->updateNodePackages(fn ($packages) => [
+            '@inertiajs/vue3' => '^2.0.0',
+            '@tailwindcss/forms' => '^0.5.3',
+            '@vitejs/plugin-vue' => '^5.0.0',
+            'autoprefixer' => '^10.4.12',
+            'postcss' => '^8.4.31',
+            'tailwindcss' => '^3.2.1',
+            'vue' => '^3.4.0',
+        ] + $packages);
 
         if ($this->option('typescript')) {
-            $this->updateNodePackages(function ($packages) {
-                return [
-                    'typescript' => '~5.5.3',
-                    'vue-tsc' => '^2.0.24',
-                ] + $packages;
-            });
+            $this->updateNodePackages(fn ($packages) => [
+                'typescript' => '~5.5.3',
+                'vue-tsc' => '^2.0.24',
+            ] + $packages);
         }
 
         if ($this->option('eslint')) {
-            $this->updateNodePackages(function ($packages) {
-                return [
-                    'eslint' => '^8.57.0',
-                    'eslint-plugin-vue' => '^9.23.0',
-                    '@rushstack/eslint-patch' => '^1.8.0',
-                    '@vue/eslint-config-prettier' => '^9.0.0',
-                    'prettier' => '^3.3.0',
-                    'prettier-plugin-organize-imports' => '^4.0.0',
-                    'prettier-plugin-tailwindcss' => '^0.6.5',
-                ] + $packages;
-            });
+            $this->updateNodePackages(fn ($packages) => [
+                'eslint' => '^8.57.0',
+                'eslint-plugin-vue' => '^9.23.0',
+                '@rushstack/eslint-patch' => '^1.8.0',
+                '@vue/eslint-config-prettier' => '^9.0.0',
+                'prettier' => '^3.3.0',
+                'prettier-plugin-organize-imports' => '^4.0.0',
+                'prettier-plugin-tailwindcss' => '^0.6.5',
+            ] + $packages);
 
             if ($this->option('typescript')) {
-                $this->updateNodePackages(function ($packages) {
-                    return [
-                        '@vue/eslint-config-typescript' => '^13.0.0',
-                    ] + $packages;
-                });
+                $this->updateNodePackages(fn ($packages) => [
+                    '@vue/eslint-config-typescript' => '^13.0.0',
+                ] + $packages);
 
-                $this->updateNodeScripts(function ($scripts) {
-                    return $scripts + [
-                        'lint' => 'eslint resources/js --ext .js,.ts,.vue --ignore-path .gitignore --fix',
-                    ];
-                });
+                $this->updateNodeScripts(fn ($scripts) => $scripts + [
+                    'lint' => 'eslint resources/js --ext .js,.ts,.vue --ignore-path .gitignore --fix',
+                ]);
 
                 copy(__DIR__.'/../../stubs/inertia-vue-ts/.eslintrc.cjs', base_path('.eslintrc.cjs'));
             } else {
-                $this->updateNodeScripts(function ($scripts) {
-                    return $scripts + [
-                        'lint' => 'eslint resources/js --ext .js,.vue --ignore-path .gitignore --fix',
-                    ];
-                });
+                $this->updateNodeScripts(fn ($scripts) => $scripts + [
+                    'lint' => 'eslint resources/js --ext .js,.vue --ignore-path .gitignore --fix',
+                ]);
 
                 copy(__DIR__.'/../../stubs/inertia-vue/.eslintrc.cjs', base_path('.eslintrc.cjs'));
             }
@@ -198,11 +186,9 @@ trait InstallVueWithInertia
      */
     protected function installModuleInertiaVueSsr(): void
     {
-        $this->updateNodePackages(function ($packages) {
-            return [
-                '@vue/server-renderer' => '^3.4.0',
-            ] + $packages;
-        });
+        $this->updateNodePackages(fn ($packages) => [
+            '@vue/server-renderer' => '^3.4.0',
+        ] + $packages);
 
         if ($this->option('typescript')) {
             copy(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/ssr.ts', resource_path('js/ssr.ts'));

@@ -7,7 +7,7 @@ namespace TooInfinity\Flextra;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 
-class FlextraServiceProvider extends ServiceProvider implements DeferrableProvider
+final class FlextraServiceProvider extends ServiceProvider implements DeferrableProvider
 {
     /**
      * Bootstrap the application services.

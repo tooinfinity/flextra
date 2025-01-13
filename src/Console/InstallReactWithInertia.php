@@ -12,7 +12,7 @@ trait InstallReactWithInertia
     /**
      * Install the inertia stack with laravel module.
      */
-    public function installModuleInertiaReact(): ?int
+    public function installModuleInertiaReact(string $moduleName): ?int
     {
         // TODO:update composer packages
         // install inertia and laravel Modules
@@ -26,66 +26,54 @@ trait InstallReactWithInertia
         }
         // TODO:update NPM packages versions and configurations
         // install or update NPM packages
-        $this->updateNodePackages(function ($packages) {
-            return [
-                '@headlessui/react' => '^2.0.0',
-                '@inertiajs/react' => '^2.0.0',
-                '@tailwindcss/forms' => '^0.5.3',
-                '@vitejs/plugin-react' => '^4.2.0',
-                'autoprefixer' => '^10.4.12',
-                'postcss' => '^8.4.31',
-                'tailwindcss' => '^3.2.1',
-                'react' => '^18.2.0',
-                'react-dom' => '^18.2.0',
-            ] + $packages;
-        });
+        $this->updateNodePackages(fn ($packages) => [
+            '@headlessui/react' => '^2.0.0',
+            '@inertiajs/react' => '^2.0.0',
+            '@tailwindcss/forms' => '^0.5.3',
+            '@vitejs/plugin-react' => '^4.2.0',
+            'autoprefixer' => '^10.4.12',
+            'postcss' => '^8.4.31',
+            'tailwindcss' => '^3.2.1',
+            'react' => '^18.2.0',
+            'react-dom' => '^18.2.0',
+        ] + $packages);
         // install or update NPM packages for typescript
         if ($this->option('typescript')) {
-            $this->updateNodePackages(function ($packages) {
-                return [
-                    '@types/node' => '^18.13.0',
-                    '@types/react' => '^18.0.28',
-                    '@types/react-dom' => '^18.0.10',
-                    'typescript' => '^5.0.2',
-                ] + $packages;
-            });
+            $this->updateNodePackages(fn ($packages) => [
+                '@types/node' => '^18.13.0',
+                '@types/react' => '^18.0.28',
+                '@types/react-dom' => '^18.0.10',
+                'typescript' => '^5.0.2',
+            ] + $packages);
         }
         // install or update NPM packages for eslint
         if ($this->option('eslint')) {
-            $this->updateNodePackages(function ($packages) {
-                return [
-                    'eslint' => '^8.57.0',
-                    'eslint-plugin-react' => '^7.34.4',
-                    'eslint-plugin-react-hooks' => '^4.6.2',
-                    'eslint-plugin-prettier' => '^5.1.3',
-                    'eslint-config-prettier' => '^9.1.0',
-                    'prettier' => '^3.3.0',
-                    'prettier-plugin-organize-imports' => '^4.0.0',
-                    'prettier-plugin-tailwindcss' => '^0.6.5',
-                ] + $packages;
-            });
+            $this->updateNodePackages(fn ($packages) => [
+                'eslint' => '^8.57.0',
+                'eslint-plugin-react' => '^7.34.4',
+                'eslint-plugin-react-hooks' => '^4.6.2',
+                'eslint-plugin-prettier' => '^5.1.3',
+                'eslint-config-prettier' => '^9.1.0',
+                'prettier' => '^3.3.0',
+                'prettier-plugin-organize-imports' => '^4.0.0',
+                'prettier-plugin-tailwindcss' => '^0.6.5',
+            ] + $packages);
 
             if ($this->option('typescript')) {
-                $this->updateNodePackages(function ($packages) {
-                    return [
-                        '@typescript-eslint/eslint-plugin' => '^7.16.0',
-                        '@typescript-eslint/parser' => '^7.16.0',
-                    ] + $packages;
-                });
+                $this->updateNodePackages(fn ($packages) => [
+                    '@typescript-eslint/eslint-plugin' => '^7.16.0',
+                    '@typescript-eslint/parser' => '^7.16.0',
+                ] + $packages);
 
-                $this->updateNodeScripts(function ($scripts) {
-                    return $scripts + [
-                        'lint' => 'eslint resources/js --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore --fix',
-                    ];
-                });
+                $this->updateNodeScripts(fn ($scripts) => $scripts + [
+                    'lint' => 'eslint resources/js --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore --fix',
+                ]);
 
                 copy(__DIR__.'/../../stubs/inertia-react-ts/.eslintrc.json', base_path('.eslintrc.json'));
             } else {
-                $this->updateNodeScripts(function ($scripts) {
-                    return $scripts + [
-                        'lint' => 'eslint resources/js --ext .js,.jsx --ignore-path .gitignore --fix',
-                    ];
-                });
+                $this->updateNodeScripts(fn ($scripts) => $scripts + [
+                    'lint' => 'eslint resources/js --ext .js,.jsx --ignore-path .gitignore --fix',
+                ]);
 
                 copy(__DIR__.'/../../stubs/inertia-react/.eslintrc.json', base_path('.eslintrc.json'));
             }
