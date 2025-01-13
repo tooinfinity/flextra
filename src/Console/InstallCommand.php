@@ -19,7 +19,7 @@ use Symfony\Component\Process\Process;
 use function Laravel\Prompts\select;
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\multiselect;
-#[AsCommand(name: 'flextra:setup')]  // Flextra: Inspired by "Flexibility" and "Extra", perfect for multi-framework tools.
+#[AsCommand(name: 'flextra:install')]  // Flextra: Inspired by "Flexibility" and "Extra", perfect for multi-framework tools.
 final class InstallCommand extends Command implements PromptsForMissingInput
 {
     use InstallReactWithInertia, InstallSvelteWithInertia, InstallVueWithInertia;
@@ -29,7 +29,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
      *
      * @var string
      */
-    protected $signature = 'vetra:install {stack? : The Development stack that should be installed with laravel Modules (react, vue, svelte)}
+    protected $signature = 'flextra:install {stack? : The Development stack that should be installed with laravel Modules (react, vue, svelte)}
                             {--dark : Indicate that dark mode support should be installed}
                             {--pest : Indicate that Pest should be installed}
                             {--ssr : Indicates if Inertia SSR support should be installed}
