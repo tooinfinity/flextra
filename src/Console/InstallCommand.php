@@ -238,9 +238,9 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     /**
      * install module-inertia-react tests from stub
      */
-    private function installTests(): bool
+    private function installTests(string $moduleName): bool
     {
-        (new Filesystem)->ensureDirectoryExists(base_path('tests/Feature'));
+        (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/tests/Feature'));
 
         $stubStack = match ($this->argument('stack')) {
             'react' => 'react',
@@ -255,11 +255,11 @@ final class InstallCommand extends Command implements PromptsForMissingInput
             if (! $this->requireComposerPackages(['pestphp/pest', 'pestphp/pest-plugin-laravel'], true)) {
                 return false;
             }
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/'.$stubStack.'/pest-tests/Feature', base_path('tests/Feature'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/'.$stubStack.'/pest-tests/Unit', base_path('tests/Unit'));
-            (new Filesystem)->copy(__DIR__.'/../../stubs/'.$stubStack.'/pest-tests/Pest.php', base_path('tests/Pest.php'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/'.$stubStack.'/pest-tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/'.$stubStack.'/pest-tests/Unit', base_path('Modules/'.$moduleName.'/tests/Unit'));
+            (new Filesystem)->copy(__DIR__.'/../../stubs/'.$stubStack.'/pest-tests/Pest.php', base_path('Modules/'.$moduleName.'/tests/Pest.php'));
         } else {
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/'.$stubStack.'/tests/Feature', base_path('tests/Feature'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/'.$stubStack.'/tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
         }
 
         return true;

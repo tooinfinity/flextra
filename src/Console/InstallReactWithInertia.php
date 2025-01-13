@@ -14,12 +14,15 @@ trait InstallReactWithInertia
      */
     public function installModuleInertiaReact(string $moduleName): ?int
     {
+        $fileSystem = new Filesystem;
+        // Install Laravel Modules Package
+        $this->installModuleDependencies();
+
         // TODO:update composer packages
         // install inertia and laravel Modules
         if (! $this->requireComposerPackages([
             'inertiajs/inertia-laravel:^2.0',
             'tightenco/ziggy:^2.0',
-            'nwidart/laravel-modules:^11.1.8',
             'laravel/sanctum:^4.0',
         ])) {
             return 1;
@@ -81,15 +84,15 @@ trait InstallReactWithInertia
             copy(__DIR__.'/../../stubs/inertia-common/.prettierrc', base_path('.prettierrc'));
         }
         // Providers...
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-common/app/Providers', app_path('Providers'));
+        $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-common/app/Providers', app_path('Providers'));
 
         // Controllers...
-        (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers'));
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-common/app/Http/Controllers', app_path('Http/Controllers'));
+        $fileSystem->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/app/Http/controllers/Auth'));
+        $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-common/app/Http/Controllers', base_path('Modules/'.$moduleName.'/app/Http/controllers/Auth'));
 
         // Requests...
-        (new Filesystem)->ensureDirectoryExists(app_path('Http/Requests'));
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Requests', app_path('Http/Requests'));
+        $fileSystem->ensureDirectoryExists(app_path('Modules/'.$moduleName.'/app/Http/Requests'));
+        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Requests', base_path('Modules/'.$moduleName.'/app/Http/Requests'));
 
         // Middleware...
         $this->installMiddleware([
@@ -97,28 +100,33 @@ trait InstallReactWithInertia
             '\Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class',
         ]);
 
-        (new Filesystem)->ensureDirectoryExists(app_path('Http/Middleware'));
+        $fileSystem->ensureDirectoryExists(app_path('Http/Middleware'));
         copy(__DIR__.'/../../stubs/inertia-common/app/Http/Middleware/HandleInertiaRequests.php', app_path('Http/Middleware/HandleInertiaRequests.php'));
 
         // Views...
-        copy(__DIR__.'/../../stubs/inertia-react/resources/views/app.blade.php', resource_path('views/app.blade.php'));
+        copy(__DIR__.'/../../stubs/inertia-react/resources/views/app.blade.php', base_path('Modules/'.$moduleName.'/views/app.blade.php'));
 
         @unlink(resource_path('views/welcome.blade.php'));
+        @unlink(base_path('Modules/'.$moduleName.'/views/welcome.blade.php'));
 
         // Components + Pages...
-        (new Filesystem)->ensureDirectoryExists(resource_path('js/Components'));
-        (new Filesystem)->ensureDirectoryExists(resource_path('js/Layouts'));
-        (new Filesystem)->ensureDirectoryExists(resource_path('js/Pages'));
+        $fileSystem->ensureDirectoryExists(resource_path('js/Components'));
+        $fileSystem->ensureDirectoryExists(resource_path('js/Layouts'));
+        $fileSystem->ensureDirectoryExists(resource_path('js/Pages'));
+
+        $fileSystem->ensureDirectoryExists(base_path('Modules/resources/assets/js/Components'));
+        $fileSystem->ensureDirectoryExists(base_path('Modules/resources/assets/js/Layouts'));
+        $fileSystem->ensureDirectoryExists(base_path('Modules/resources/assets/js/Pages'));
 
         if ($this->option('typescript')) {
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Components', resource_path('js/Components'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Layouts', resource_path('js/Layouts'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Pages', resource_path('js/Pages'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types', resource_path('js/types'));
+            $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
+            $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Layouts', base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
+            $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Pages', base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
+            $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types', base_path('Modules/'.$moduleName.'/resources/assets/js/types'));
         } else {
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Components', resource_path('js/Components'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Layouts', resource_path('js/Layouts'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Pages', resource_path('js/Pages'));
+            $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
+            $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Layouts', base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
+            $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Pages', base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
         }
 
         if (! $this->option('dark')) {
@@ -130,19 +138,19 @@ trait InstallReactWithInertia
         }
 
         // Tests...
-        if (! $this->installTests()) {
+        if (! $this->installTests($moduleName)) {
             return 1;
         }
 
         if ($this->option('pest')) {
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-common/pest-tests/Feature', base_path('tests/Feature'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-common/pest-tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
         } else {
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-common/tests/Feature', base_path('tests/Feature'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-common/tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
         }
 
         // Routes...
-        copy(__DIR__.'/../../stubs/inertia-common/routes/web.php', base_path('routes/web.php'));
-        copy(__DIR__.'/../../stubs/inertia-common/routes/auth.php', base_path('routes/auth.php'));
+        copy(__DIR__.'/../../stubs/inertia-common/routes/web.php', base_path('Modules/'.$moduleName.'/routes/web.php'));
+        copy(__DIR__.'/../../stubs/inertia-common/routes/auth.php', base_path('Modules/'.$moduleName.'/routes/auth.php'));
 
         // Tailwind / Vite...
         copy(__DIR__.'/../../stubs/default/resources/css/app.css', resource_path('css/app.css'));
@@ -161,6 +169,7 @@ trait InstallReactWithInertia
             $this->replaceInFile('"vite build', '"tsc && vite build', base_path('package.json'));
             $this->replaceInFile('.jsx', '.tsx', base_path('vite.config.js'));
             $this->replaceInFile('.jsx', '.tsx', resource_path('views/app.blade.php'));
+            $this->replaceInFile('.jsx', '.tsx', base_path('Modules/'.$moduleName.'/resources/views/app.blade.php'));
             $this->replaceInFile('.vue', '.tsx', base_path('tailwind.config.js'));
         } else {
             copy(__DIR__.'/../../stubs/inertia-common/jsconfig.json', base_path('jsconfig.json'));

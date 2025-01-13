@@ -17,7 +17,6 @@ trait InstallSvelteWithInertia
         if (! $this->requireComposerPackages([
             'inertiajs/inertia-laravel:^2.0',
             'tightenco/ziggy:^2.0',
-            'nwidart/laravel-modules:^11.1.8',
             'laravel/sanctum:^4.0',
         ])) {
             return 1;
