@@ -49,22 +49,17 @@ final class InstallCommand extends Command implements PromptsForMissingInput
      */
     public function handle(): ?int
     {
-        switch ($this->argument('stack')) {
-            case 'react':
-                $this->installModuleInertiaReact();
-                break;
-            case 'vue':
-                $this->installModuleInertiaVue();
-                break;
-            case 'svelte':
-                $this->installModuleInertiaSvelte();
-                break;
-            default:
-                $this->components->error('Invalid stack. Supported stacks are [react], [vue], and [svelte].');
-                break;
+        if ($this->argument('stack') === 'vue') {
+            return $this->installModuleInertiaVue();
+        } elseif ($this->argument('stack') === 'react') {
+            return $this->installModuleInertiaReact();
+        } elseif ($this->argument('stack') === 'svelte') {
+            return $this->installModuleInertiaSvelte();
         }
 
-        return 0;
+        $this->components->error('Invalid stack. Supported stacks are [blade], [livewire], [livewire-functional], [react], [vue], and [api].');
+
+        return 1;
     }
 
     /**
