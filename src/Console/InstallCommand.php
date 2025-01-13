@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TooInfinity\Flextra\Console;
 
+use Composer\InstalledVersions;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Filesystem\Filesystem;
@@ -15,6 +16,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
+use Illuminate\Support\Facades\File;
 
 use function Laravel\Prompts\select;
 use function Laravel\Prompts\confirm;
@@ -426,5 +428,56 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         /** @phpstan-ignore-next-line */
         return class_exists(\Pest\TestSuite::class);
     }
+
+    /**
+     * Install Module Dependencies
+     * @return void
+     */
+    protected  function installModuleDependencies(): void
+    {
+        // Check if laravel Modules installed and install it
+        if (!InstalledVersions::isInstalled('nwidart/laravel-modules')) {
+            $this->addToComposer('config', 'allow-plugins', [
+                "wikimedia/composer-merge-plugin" => true,
+                "pestphp/pest-plugin" => true
+            ]);
+            $this->runCommands(['composer require nwidart/laravel-modules']);
+            $this->runCommands(['php artisan vendor:publish --provider="Nwidart\Modules\LaravelModulesServiceProvider"']);
+            $this->addToComposer('extra', 'merge-plugin', [
+                "include" => [
+                    "Modules/*/composer.json"
+                ]
+            ]);
+            $this->runCommands(['composer dump-autoload']);
+        }
+        $this->runCommands(['php artisan module:make Auth']);
+    }
+
+    /**
+     * Adding code to composer Extra
+     * @param string $key
+     * @param array $value
+     * @param string $parent
+     * @return void
+     */
+    protected function addToComposer(string $parent, string $key, array $value): void
+    {
+        $composerJsonPath = base_path('composer.json');
+
+        // Read and decode composer.json
+        $composerJson = json_decode(File::get($composerJsonPath), true);
+
+        // Ensure the 'extra' section exists
+        if (!isset($composerJson[$parent])) {
+            $composerJson[$parent] = [];
+        }
+
+        // Add or update the key-value pair
+        $composerJson[$parent][$key] = $value;
+
+        // Encode the array back to JSON and save it
+        File::put($composerJsonPath, json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    }
+
 
 }
