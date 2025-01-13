@@ -1,0 +1,10 @@
+/vendor
+/.idea
+/.vscode
+/.vagrant
+/node_modules
+.phpunit.result.cache
+scratch.md
+.DS_Store
+.env
+composer.lock
