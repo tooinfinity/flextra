@@ -60,12 +60,9 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     {
         if ($this->argument('stack') === 'vue') {
             return $this->installModuleInertiaVue($this->moduleName);
-        }
-        if ($this->argument('stack') === 'react') {
+        } elseif ($this->argument('stack') === 'react') {
             return $this->installModuleInertiaReact($this->moduleName);
-        }
-
-        if ($this->argument('stack') === 'svelte') {
+        } elseif ($this->argument('stack') === 'svelte') {
             return $this->installModuleInertiaSvelte($this->moduleName);
         }
 
