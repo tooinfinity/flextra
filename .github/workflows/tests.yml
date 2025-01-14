@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        stack: [react, vue, svelte]
+        stack: [react, vue] # add svelte to array after implementing installSvelteWithInertia
         laravel: [11]
         args: ["", --pest]
         include:
@@ -34,6 +34,9 @@ jobs:
     name: Test Stubs - Laravel ${{ matrix.laravel }} - ${{ matrix.stack }} ${{ matrix.args }}
 
     steps:
+      - name: Install expect
+        run: sudo apt-get install -y expect
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -57,7 +60,12 @@ jobs:
       - name: Install Flextra
         run: |
           composer update "tooinfinity/flextra:dev-main" --prefer-dist --no-interaction --no-progress -W
-          php artisan flextra:install ${{ matrix.stack }} ${{ matrix.args }}
+          expect <<EOF
+          spawn php artisan flextra:install  ${{ matrix.stack }} ${{ matrix.args }}
+          expect "Enter the name of the module:"
+          send "Auth\r"
+          expect eof
+          EOF
 
       - name: Install NPM dependencies
         run: npm i
