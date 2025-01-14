@@ -19,7 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 
-use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\select;
 
@@ -46,7 +45,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
      *
      * @var string
      */
-    protected $description = 'Install the vetra with the Inertia stack and laravel Modules';
+    protected $description = 'Install the flextra with the Inertia stack and laravel Modules';
 
     /**
      * The name of the module.
@@ -72,7 +71,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
             return $this->installModuleInertiaSvelte($this->moduleName);
         }
 
-        $this->components->error('Invalid stack. Supported stacks are [blade], [livewire], [livewire-functional], [react], [vue], and [api].');
+        $this->components->error('Invalid stack. Supported stacks are [react], [vue], and [svelte].');
 
         return 1;
     }
@@ -83,7 +82,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     protected function promptForMissingArgumentsUsing(): array
     {
         return [
-            'stack' => fn (): int|string => select(
+            'stack' => fn (): string => select(
                 label: 'Which stack do you want to install?',
                 options: [
                     'react' => 'Inertia React with Laravel Modules',
