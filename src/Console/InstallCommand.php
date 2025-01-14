@@ -413,9 +413,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         }
         // Prompt the user to either make the Auth module but, I prefer auth
         // because it's a must-have module for breeze to live
-        if (confirm('Do you want to create a module?')) {
-            $this->runCommands(["php artisan module:make {$this->moduleName}"]);
-        }
+        $this->runCommands(["php artisan module:make {$this->moduleName}"]);
     }
 
     /**
