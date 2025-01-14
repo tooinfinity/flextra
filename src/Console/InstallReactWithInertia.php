@@ -104,10 +104,10 @@ trait InstallReactWithInertia
         copy(__DIR__.'/../../stubs/inertia-common/app/Http/Middleware/HandleInertiaRequests.php', app_path('Http/Middleware/HandleInertiaRequests.php'));
 
         // Views...
-        copy(__DIR__.'/../../stubs/inertia-react/resources/views/app.blade.php', base_path('Modules/'.$moduleName.'/views/app.blade.php'));
+        copy(__DIR__.'/../../stubs/inertia-react/resources/views/app.blade.php', base_path('Modules/'.$moduleName.'/resources/views/app.blade.php'));
 
         @unlink(resource_path('views/welcome.blade.php'));
-        @unlink(base_path('Modules/'.$moduleName.'/views/welcome.blade.php'));
+        @unlink(base_path('Modules/'.$moduleName.'/resources/views/welcome.blade.php'));
 
         // Components + Pages...
         $fileSystem->ensureDirectoryExists(resource_path('js/Components'));
