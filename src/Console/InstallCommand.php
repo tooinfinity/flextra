@@ -232,7 +232,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     /**
      * install module-inertia-react tests from stub
      */
-    private function installTests(string $moduleName): bool
+    private function installTests(): bool
     {
         (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/tests/Feature'));
 

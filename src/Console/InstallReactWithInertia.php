@@ -114,9 +114,9 @@ trait InstallReactWithInertia
         $fileSystem->ensureDirectoryExists(resource_path('js/Layouts'));
         $fileSystem->ensureDirectoryExists(resource_path('js/Pages'));
 
-        $fileSystem->ensureDirectoryExists(base_path('Modules/resources/assets/js/Components'));
-        $fileSystem->ensureDirectoryExists(base_path('Modules/resources/assets/js/Layouts'));
-        $fileSystem->ensureDirectoryExists(base_path('Modules/resources/assets/js/Pages'));
+        $fileSystem->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
+        $fileSystem->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
+        $fileSystem->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
 
         if ($this->option('typescript')) {
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
@@ -137,10 +137,6 @@ trait InstallReactWithInertia
             );
         }
 
-        // Tests...
-        if (! $this->installTests($moduleName)) {
-            return 1;
-        }
 
         if ($this->option('pest')) {
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-common/pest-tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
