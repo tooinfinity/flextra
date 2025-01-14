@@ -91,7 +91,7 @@ trait InstallReactWithInertia
         $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-common/app/Http/Controllers', base_path('Modules/'.$moduleName.'/app/Http/controllers/Auth'));
 
         // Requests...
-        $fileSystem->ensureDirectoryExists(app_path('Modules/'.$moduleName.'/app/Http/Requests'));
+        $fileSystem->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/app/Http/Requests'));
         (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Requests', base_path('Modules/'.$moduleName.'/app/Http/Requests'));
 
         // Middleware...
