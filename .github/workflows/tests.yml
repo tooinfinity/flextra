@@ -65,7 +65,7 @@ jobs:
           expect "Enter the name of the module:"
           send "Auth\r"
           expect "Do you want to create a module? (Yes/No):"
-          send "Yes\r"
+          send "\r"
           expect eof
           EOF
 
