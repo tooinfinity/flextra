@@ -95,14 +95,11 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     }
 
     // function to copy one file from stub to target path with Replace the moduleName placeholder in the contents
-    protected function copyFileWithNamespace(string $moduleName, string $stubPath, string $targetPath): void
+    protected function copyFileWithNamespace(string $moduleName, string $stubfile, string $targetfile): void
     {
-        $filesystem = new Filesystem;
-        $filesystem->ensureDirectoryExists($targetPath);
-        $filesystem->copy($stubPath, $targetPath);
-        $contents = file_get_contents($targetPath);
+        $contents = file_get_contents($stubfile);
         $contents = str_replace('{{moduleName}}', $moduleName, $contents);
-        file_put_contents($targetPath, $contents);
+        file_put_contents($targetfile, $contents);
     }
 
     /**
