@@ -71,30 +71,25 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         return 1;
     }
 
-    public function copyModuleFilesWithNamespace($moduleNaming, $stubDir, $targetDir): void
+    protected function copyModuleFilesWithNamespace(string $moduleName, string $stubPath, string $targetPath): void
     {
-        // Define the module namespace in the format 'Module\{moduleName}\...'
-        $moduleNamespace = 'Module\\'.ucfirst($moduleNaming);
+        $filesystem = new Filesystem;
+        $filesystem->ensureDirectoryExists($targetPath);
 
-        // Ensure the target directory exists
-        if (! File::exists($targetDir)) {
-            File::makeDirectory($targetDir, 0755, true);
-        }
+        // Get all files from the stub directory
+        $files = (new Filesystem)->allFiles($stubPath);
 
-        // Copy the directory from the stub to the target location
-        File::copyDirectory($stubDir, $targetDir);
-
-        // Process each file in the copied directory
-        $files = File::allFiles($targetDir);
         foreach ($files as $file) {
-            // Get the content of the file
-            $content = File::get($file);
+            $contents = file_get_contents($file->getPathname());
 
-            // Replace the namespace placeholder with the actual module namespace
-            $renderedContent = str_replace('{{moduleNamespace}}', $moduleNamespace, $content);
+            // Replace the moduleName placeholder in the contents
+            $contents = str_replace('{{moduleName}}', $moduleName, $contents);
 
-            // Save the updated content back to the file
-            File::put($file, $renderedContent);
+            // Create the target file with replaced contents
+            $filesystem->put(
+                $targetPath.'/'.$file->getFilename(),
+                $contents
+            );
         }
     }
 

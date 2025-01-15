@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace tests\Feature\Auth;
+namespace Modules\{{moduleName}}\tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

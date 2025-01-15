@@ -91,8 +91,7 @@ trait InstallReactWithInertia
         $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-common/app/Http/Controllers', base_path('Modules/'.$moduleName.'/app/Http/Controllers/Auth'));
 
         // Requests...
-        $fileSystem->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/app/Http/Requests'));
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Requests', base_path('Modules/'.$moduleName.'/app/Http/Requests'));
+        $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/Auth/Requests', base_path('Modules/'.$moduleName.'/app/Http/Requests'));
 
         // Middleware...
         $this->installMiddleware([
@@ -101,7 +100,7 @@ trait InstallReactWithInertia
         ]);
 
         $fileSystem->ensureDirectoryExists(app_path('Http/Middleware'));
-        copy(__DIR__.'/../../stubs/inertia-common/app/Http/Middleware/HandleInertiaRequests.php', app_path('Http/Middleware/HandleInertiaRequests.php'));
+        copy(__DIR__.'/../../stubs/inertia-php/Middleware/HandleInertiaRequests.php', app_path('Http/Middleware/HandleInertiaRequests.php'));
 
         // Views...
         copy(__DIR__.'/../../stubs/inertia-react/resources/views/app.blade.php', base_path('Modules/'.$moduleName.'/resources/views/app.blade.php'));
@@ -138,9 +137,9 @@ trait InstallReactWithInertia
         }
 
         if ($this->option('pest')) {
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-common/pest-tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-php/pest-tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
         } else {
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-common/tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-php/tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
         }
 
         // Routes...
@@ -148,8 +147,8 @@ trait InstallReactWithInertia
         copy(__DIR__.'/../../stubs/inertia-common/routes/auth.php', base_path('Modules/'.$moduleName.'/routes/auth.php'));
 
         // Tailwind / Vite...
-        copy(__DIR__.'/../../stubs/default/resources/css/app.css', resource_path('css/app.css'));
-        copy(__DIR__.'/../../stubs/default/postcss.config.js', base_path('postcss.config.js'));
+        copy(__DIR__.'/../../stubs/inertia-common/resources/css/app.css', resource_path('css/app.css'));
+        copy(__DIR__.'/../../stubs/inertia-common/postcss.config.js', base_path('postcss.config.js'));
         copy(__DIR__.'/../../stubs/inertia-common/tailwind.config.js', base_path('tailwind.config.js'));
         copy(__DIR__.'/../../stubs/inertia-react/vite.config.js', base_path('vite.config.js'));
 
