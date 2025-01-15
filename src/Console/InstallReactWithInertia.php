@@ -118,19 +118,21 @@ trait InstallReactWithInertia
         $fileSystem->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
 
         if ($this->option('typescript')) {
-            $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
-            $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Layouts', base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
+            $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Components', resource_path('js/Components'));
+            $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Layouts', resource_path('js/Layouts'));
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Pages', base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
-            $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types', base_path('Modules/'.$moduleName.'/resources/assets/js/types'));
+            $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types', base_path('Modules'.$moduleName.'/resources/assets/js/types'));
+            $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types', resource_path('js/types'));
         } else {
-            $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
-            $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Layouts', base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
+            $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Components', resource_path('js/Components'));
+            $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Layouts', resource_path('js/Layouts'));
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Pages', base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
         }
 
         if (! $this->option('dark')) {
             $this->removeDarkClasses((new Finder)
                 ->in(resource_path('js'))
+                ->in(base_path('Modules/'.$moduleName.'/resources/assets/js'))
                 ->name(['*.jsx', '*.tsx'])
                 ->notName(['Welcome.jsx', 'Welcome.tsx'])
             );
@@ -155,6 +157,7 @@ trait InstallReactWithInertia
         if ($this->option('typescript')) {
             copy(__DIR__.'/../../stubs/inertia-react-ts/tsconfig.json', base_path('tsconfig.json'));
             copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/app.tsx', resource_path('js/app.tsx'));
+            copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/app.tsx', resource_path('Modules/'.$moduleName.'/resources/assets/js/app.tsx'));
 
             if (file_exists(resource_path('js/bootstrap.js'))) {
                 rename(resource_path('js/bootstrap.js'), resource_path('js/bootstrap.ts'));
@@ -167,6 +170,7 @@ trait InstallReactWithInertia
         } else {
             copy(__DIR__.'/../../stubs/inertia-common/jsconfig.json', base_path('jsconfig.json'));
             copy(__DIR__.'/../../stubs/inertia-react/resources/js/app.jsx', resource_path('js/app.jsx'));
+            copy(__DIR__.'/../../stubs/inertia-react/resources/js/app.jsx', resource_path('Modules/'.$moduleName.'/resources/assets/js/app.jsx'));
 
             $this->replaceInFile('.vue', '.jsx', base_path('tailwind.config.js'));
         }
