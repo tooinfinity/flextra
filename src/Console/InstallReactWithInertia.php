@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TooInfinity\Flextra\Console;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\File;
 use Symfony\Component\Finder\Finder;
 
 trait InstallReactWithInertia
@@ -84,11 +85,10 @@ trait InstallReactWithInertia
             copy(__DIR__.'/../../stubs/inertia-common/.prettierrc', base_path('.prettierrc'));
         }
         // Providers...
-        $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-common/app/Providers', app_path('Providers'));
+        $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-php/Providers', app_path('Providers'));
 
         // Controllers...
-        $fileSystem->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/app/Http/controllers/Auth'));
-        $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-common/app/Http/Controllers', base_path('Modules/'.$moduleName.'/app/Http/controllers/Auth'));
+        $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-common/app/Http/Controllers', base_path('Modules/'.$moduleName.'/app/Http/Controllers/Auth'));
 
         // Requests...
         $fileSystem->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/app/Http/Requests'));
@@ -136,7 +136,6 @@ trait InstallReactWithInertia
                 ->notName(['Welcome.jsx', 'Welcome.tsx'])
             );
         }
-
 
         if ($this->option('pest')) {
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-common/pest-tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));

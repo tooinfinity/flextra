@@ -71,6 +71,33 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         return 1;
     }
 
+    public function copyModuleFilesWithNamespace($moduleNaming, $stubDir, $targetDir): void
+    {
+        // Define the module namespace in the format 'Module\{moduleName}\...'
+        $moduleNamespace = 'Module\\'.ucfirst($moduleNaming);
+
+        // Ensure the target directory exists
+        if (! File::exists($targetDir)) {
+            File::makeDirectory($targetDir, 0755, true);
+        }
+
+        // Copy the directory from the stub to the target location
+        File::copyDirectory($stubDir, $targetDir);
+
+        // Process each file in the copied directory
+        $files = File::allFiles($targetDir);
+        foreach ($files as $file) {
+            // Get the content of the file
+            $content = File::get($file);
+
+            // Replace the namespace placeholder with the actual module namespace
+            $renderedContent = str_replace('{{moduleNamespace}}', $moduleNamespace, $content);
+
+            // Save the updated content back to the file
+            File::put($file, $renderedContent);
+        }
+    }
+
     /**
      * Prompt for missing arguments to the command.
      */
