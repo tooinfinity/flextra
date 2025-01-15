@@ -74,10 +74,14 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     protected function copyModuleFilesWithNamespace(string $moduleName, string $stubPath, string $targetPath): void
     {
         $filesystem = new Filesystem;
-        $filesystem->ensureDirectoryExists($targetPath);
+
+        // check if the target path exists
+        if (! File::exists($targetPath)) {
+            File::makeDirectory($targetPath, 0755, true);
+        }
 
         // Get all files from the stub directory
-        $files = (new Filesystem)->allFiles($stubPath);
+        $files = $filesystem->allFiles($stubPath);
 
         foreach ($files as $file) {
             $contents = file_get_contents($file->getPathname());
