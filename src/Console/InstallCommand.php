@@ -76,12 +76,9 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         $filesystem = new Filesystem;
 
         // check if the target path exists
-        if (! File::exists($targetPath)) {
-            File::makeDirectory($targetPath, 0755, true);
-        }
-
+        $filesystem->ensureDirectoryExists($targetPath);
         // Get all files from the stub directory
-        $files = $filesystem->allFiles($stubPath);
+        $files = (new Filesystem)->allFiles($stubPath);
 
         foreach ($files as $file) {
             $contents = file_get_contents($file->getPathname());
@@ -95,6 +92,17 @@ final class InstallCommand extends Command implements PromptsForMissingInput
                 $contents
             );
         }
+    }
+
+    // function to copy one file from stub to target path with Replace the moduleName placeholder in the contents
+    protected function copyFileWithNamespace(string $moduleName, string $stubPath, string $targetPath): void
+    {
+        $filesystem = new Filesystem;
+        $filesystem->ensureDirectoryExists($targetPath);
+        $filesystem->copy($stubPath, $targetPath);
+        $contents = file_get_contents($targetPath);
+        $contents = str_replace('{{moduleName}}', $moduleName, $contents);
+        file_put_contents($targetPath, $contents);
     }
 
     /**
