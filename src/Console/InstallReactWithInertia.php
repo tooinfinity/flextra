@@ -143,8 +143,8 @@ trait InstallReactWithInertia
         }
 
         // Routes...
-        copy(__DIR__.'/../../stubs/inertia-common/routes/web.php', base_path('Modules/'.$moduleName.'/routes/web.php'));
-        copy(__DIR__.'/../../stubs/inertia-common/routes/auth.php', base_path('Modules/'.$moduleName.'/routes/auth.php'));
+        copy(__DIR__.'/../../stubs/inertia-php/routes/web.php', base_path('Modules/'.$moduleName.'/routes/web.php'));
+        copy(__DIR__.'/../../stubs/inertia-php/routes/auth.php', base_path('Modules/'.$moduleName.'/routes/auth.php'));
 
         // Tailwind / Vite...
         copy(__DIR__.'/../../stubs/inertia-common/resources/css/app.css', resource_path('css/app.css'));
