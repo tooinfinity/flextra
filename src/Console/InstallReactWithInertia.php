@@ -162,7 +162,6 @@ trait InstallReactWithInertia
 
             $this->replaceInFile('"vite build', '"tsc && vite build', base_path('package.json'));
             $this->replaceInFile('.jsx', '.tsx', base_path('vite.config.js'));
-            $this->replaceInFile('.jsx', '.tsx', resource_path('views/app.blade.php'));
             $this->replaceInFile('.jsx', '.tsx', base_path('Modules/'.$moduleName.'/resources/views/app.blade.php'));
             $this->replaceInFile('.vue', '.tsx', base_path('tailwind.config.js'));
         } else {
