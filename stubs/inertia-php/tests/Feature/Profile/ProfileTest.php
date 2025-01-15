@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\{{moduleName}}\tests\Feature\Profile;
+namespace Modules\{{moduleName}}\Tests\Feature\Profile;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

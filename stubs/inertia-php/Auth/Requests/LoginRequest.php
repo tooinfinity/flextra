@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\{{moduleName}}\Http\Request;
+namespace Modules\{{moduleName}}\Http\Requests;
 
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;

@@ -7,7 +7,7 @@ use Modules\{{moduleName}}\Http\Controllers\ConfirmablePasswordController;
 use Modules\{{moduleName}}\Http\Controllers\EmailVerificationNotificationController;
 use Modules\{{moduleName}}\Http\Controllers\EmailVerificationPromptController;
 use Modules\{{moduleName}}\Http\Controllers\NewPasswordController;
-use Modules\{{moduleName}}\Http\Controllers\asswordController;
+use Modules\{{moduleName}}\Http\Controllers\PasswordController;
 use Modules\{{moduleName}}\Http\Controllers\PasswordResetLinkController;
 use Modules\{{moduleName}}\Http\Controllers\RegisteredUserController;
 use Modules\{{moduleName}}\Http\Controllers\VerifyEmailController;

@@ -88,11 +88,11 @@ trait InstallReactWithInertia
         $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-php/Providers', app_path('Providers'));
 
         // Controllers...
-        $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/Auth/Controllers', base_path('Modules/'.$moduleName.'/app/Http/Controllers/Auth'));
-
+        $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/Auth/Controllers', base_path('Modules/'.$moduleName.'/app/Http/Controllers'));
+        $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/Profile/Controllers', base_path('Modules/'.$moduleName.'/app/Http/Controllers'));
         // Requests...
         $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/Auth/Requests', base_path('Modules/'.$moduleName.'/app/Http/Requests'));
-
+        $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/Profile/Requests', base_path('Modules/'.$moduleName.'/app/Http/Requests'));
         // Middleware...
         $this->installMiddleware([
             '\App\Http\Middleware\HandleInertiaRequests::class',
@@ -137,14 +137,14 @@ trait InstallReactWithInertia
         }
 
         if ($this->option('pest')) {
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-php/pest-tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
+            $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/pest-tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
         } else {
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-php/tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
+            $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
         }
 
         // Routes...
-        copy(__DIR__.'/../../stubs/inertia-php/routes/web.php', base_path('Modules/'.$moduleName.'/routes/web.php'));
-        copy(__DIR__.'/../../stubs/inertia-php/routes/auth.php', base_path('Modules/'.$moduleName.'/routes/auth.php'));
+        $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/routes/web.php', base_path('Modules/'.$moduleName.'/routes/web.php'));
+        $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/routes/auth.php', base_path('Modules/'.$moduleName.'/routes/auth.php'));
 
         // Tailwind / Vite...
         copy(__DIR__.'/../../stubs/inertia-common/resources/css/app.css', resource_path('css/app.css'));

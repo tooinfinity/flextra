@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Providers;
+namespace App\Providers;
 
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\{{moduleName}}\Http\Request;
+namespace Modules\{{moduleName}}\Http\Requests;
 
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
