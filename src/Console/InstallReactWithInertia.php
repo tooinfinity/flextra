@@ -157,7 +157,7 @@ trait InstallReactWithInertia
         if ($this->option('typescript')) {
             copy(__DIR__.'/../../stubs/inertia-react-ts/tsconfig.json', base_path('tsconfig.json'));
             copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/app.tsx', resource_path('js/app.tsx'));
-            copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/app.tsx', resource_path('Modules/'.$moduleName.'/resources/assets/js/app.tsx'));
+            copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/app.tsx', base_path('Modules/'.$moduleName.'/resources/assets/js/app.tsx'));
 
             if (file_exists(resource_path('js/bootstrap.js'))) {
                 rename(resource_path('js/bootstrap.js'), resource_path('js/bootstrap.ts'));
@@ -170,7 +170,7 @@ trait InstallReactWithInertia
         } else {
             copy(__DIR__.'/../../stubs/inertia-common/jsconfig.json', base_path('jsconfig.json'));
             copy(__DIR__.'/../../stubs/inertia-react/resources/js/app.jsx', resource_path('js/app.jsx'));
-            copy(__DIR__.'/../../stubs/inertia-react/resources/js/app.jsx', resource_path('Modules/'.$moduleName.'/resources/assets/js/app.jsx'));
+            copy(__DIR__.'/../../stubs/inertia-react/resources/js/app.jsx', base_path('Modules/'.$moduleName.'/resources/assets/js/app.jsx'));
 
             $this->replaceInFile('.vue', '.jsx', base_path('tailwind.config.js'));
         }
