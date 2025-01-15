@@ -88,7 +88,7 @@ trait InstallReactWithInertia
         $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-php/Providers', app_path('Providers'));
 
         // Controllers...
-        $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-common/app/Http/Controllers', base_path('Modules/'.$moduleName.'/app/Http/Controllers/Auth'));
+        $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/Auth/Controllers', base_path('Modules/'.$moduleName.'/app/Http/Controllers/Auth'));
 
         // Requests...
         $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/Auth/Requests', base_path('Modules/'.$moduleName.'/app/Http/Requests'));
