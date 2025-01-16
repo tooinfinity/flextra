@@ -60,9 +60,11 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     {
         if ($this->argument('stack') === 'vue') {
             return $this->installModuleInertiaVue($this->moduleName);
-        } elseif ($this->argument('stack') === 'react') {
+        }
+        if ($this->argument('stack') === 'react') {
             return $this->installModuleInertiaReact($this->moduleName);
-        } elseif ($this->argument('stack') === 'svelte') {
+        }
+        if ($this->argument('stack') === 'svelte') {
             return $this->installModuleInertiaSvelte($this->moduleName);
         }
 
@@ -71,7 +73,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         return 1;
     }
 
-    protected function copyModuleFilesWithNamespace(string $moduleName, string $stubPath, string $targetPath): void
+    private function copyModuleFilesWithNamespace(string $moduleName, string $stubPath, string $targetPath): void
     {
         $filesystem = new Filesystem;
 
@@ -95,7 +97,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     }
 
     // function to copy one file from stub to target path with Replace the moduleName placeholder in the contents
-    protected function copyFileWithNamespace(string $moduleName, string $stubfile, string $targetfile): void
+    private function copyFileWithNamespace(string $moduleName, string $stubfile, string $targetfile): void
     {
         $contents = file_get_contents($stubfile);
         $contents = str_replace('{{moduleName}}', $moduleName, $contents);
@@ -291,32 +293,6 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     }
 
     /**
-     * Install the given middleware names into the application.
-     */
-    private function installMiddleware(array|string $names, string $group = 'web', string $modifier = 'append'): void
-    {
-        $bootstrapApp = file_get_contents(base_path('bootstrap/app.php'));
-
-        collect(Arr::wrap($names))
-            ->filter(fn ($name): bool => ! Str::contains($bootstrapApp, $name))
-            ->whenNotEmpty(function ($names) use ($bootstrapApp, $group, $modifier): void {
-                $names = $names->map(fn ($name): string => "$name")->implode(','.PHP_EOL.'            ');
-
-                $bootstrapApp = str_replace(
-                    '->withMiddleware(function (Middleware $middleware) {',
-                    '->withMiddleware(function (Middleware $middleware) {'
-                    .PHP_EOL."        \$middleware->$group($modifier: ["
-                    .PHP_EOL."            $names,"
-                    .PHP_EOL.'        ]);'
-                    .PHP_EOL,
-                    $bootstrapApp,
-                );
-
-                file_put_contents(base_path('bootstrap/app.php'), $bootstrapApp);
-            });
-    }
-
-    /**
      * Install the given middleware aliases into the application.
      */
     private function installMiddlewareAliases(array $aliases): void
@@ -506,5 +482,28 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     private function isUsingPest(): bool
     {
         return class_exists(\Pest\TestSuite::class);
+    }
+
+    private function installMiddleware(array|string $names, string $group = 'web', string $modifier = 'append'): void
+    {
+        $bootstrapApp = file_get_contents(base_path('bootstrap/app.php'));
+
+        collect(Arr::wrap($names))
+            ->filter(fn ($name): bool => ! Str::contains($bootstrapApp, $name))
+            ->whenNotEmpty(function ($names) use ($bootstrapApp, $group, $modifier): void {
+                $names = $names->map(fn ($name): string => "$name")->implode(','.PHP_EOL.'            ');
+
+                $bootstrapApp = str_replace(
+                    '->withMiddleware(function (Middleware $middleware) {',
+                    '->withMiddleware(function (Middleware $middleware) {'
+                    .PHP_EOL."        \$middleware->$group($modifier: ["
+                    .PHP_EOL."            $names,"
+                    .PHP_EOL.'        ]);'
+                    .PHP_EOL,
+                    $bootstrapApp,
+                );
+
+                file_put_contents(base_path('bootstrap/app.php'), $bootstrapApp);
+            });
     }
 }

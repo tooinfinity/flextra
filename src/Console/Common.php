@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace TooInfinity\Flextra\Console;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 
-final class Common
+final readonly class Common
 {
     private const SUPPORTED_STACKS = [
         'react', 'react-ts',
@@ -17,19 +19,16 @@ final class Common
 
     private Filesystem $fileSystem;
 
-    private string $moduleName;
-
     private string $stack;
 
-    public function __construct(string $moduleName, string $stack = 'react')
+    public function __construct(private string $moduleName, string $stack = 'react')
     {
         $this->fileSystem = new Filesystem;
-        $this->moduleName = $moduleName;
         $this->validateStack($stack);
         $this->stack = $stack;
     }
 
-    public function authBackendFiles(): void
+    public function installAuthBackendFiles(): void
     {
         // Providers...
         $this->fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-php/Providers', app_path('Providers'));
@@ -77,9 +76,19 @@ final class Common
 
         @unlink(resource_path('views/welcome.blade.php'));
         @unlink(base_path('Modules/'.$this->moduleName.'/resources/views/welcome.blade.php'));
+        // Pest Tests
+        if ($this->option('pest')) {
+            $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/pest-tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
+        } else {
+            $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
+        }
+
+        // Routes...
+        $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/routes/web.php', base_path('Modules/'.$moduleName.'/routes/web.php'));
+        $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/routes/auth.php', base_path('Modules/'.$moduleName.'/routes/auth.php'));
     }
 
-    public function authFrontendFiles(): void
+    public function installAuthFrontendFiles(): void
     {
         $stubPath = $this->getStubPath();
         $modulePath = base_path('Modules/'.$this->moduleName);
@@ -138,7 +147,6 @@ final class Common
     private function copyFrontendDirectories(string $stubPath, string $modulePath): void
     {
         $directories = ['Components', 'Layouts', 'Pages', 'Types'];
-        $extension = str_contains($this->stack, '-ts') ? '{ts,tsx}' : '{js,jsx}';
 
         foreach ($directories as $dir) {
             if ($dir === 'Types' && ! str_contains($this->stack, '-ts')) {
@@ -188,37 +196,57 @@ final class Common
         );
     }
 
-    private function copyModuleFilesWithNamespace(string $moduleName, string $source, string $destination): void
+    private function installMiddleware(array|string $names, string $group = 'web', string $modifier = 'append'): void
     {
-        $this->fileSystem->ensureDirectoryExists($destination);
+        $bootstrapApp = file_get_contents(base_path('bootstrap/app.php'));
 
-        foreach ($this->fileSystem->allFiles($source) as $file) {
+        collect(Arr::wrap($names))
+            ->filter(fn ($name): bool => ! Str::contains($bootstrapApp, $name))
+            ->whenNotEmpty(function ($names) use ($bootstrapApp, $group, $modifier): void {
+                $names = $names->map(fn ($name): string => "$name")->implode(','.PHP_EOL.'            ');
+
+                $bootstrapApp = str_replace(
+                    '->withMiddleware(function (Middleware $middleware) {',
+                    '->withMiddleware(function (Middleware $middleware) {'
+                    .PHP_EOL."        \$middleware->$group($modifier: ["
+                    .PHP_EOL."            $names,"
+                    .PHP_EOL.'        ]);'
+                    .PHP_EOL,
+                    $bootstrapApp,
+                );
+
+                file_put_contents(base_path('bootstrap/app.php'), $bootstrapApp);
+            });
+    }
+
+    private function copyModuleFilesWithNamespace(string $moduleName, string $stubPath, string $targetPath): void
+    {
+        $filesystem = new Filesystem;
+
+        // check if the target path exists
+        $filesystem->ensureDirectoryExists($targetPath);
+        // Get all files from the stub directory
+        $files = (new Filesystem)->allFiles($stubPath);
+
+        foreach ($files as $file) {
             $contents = file_get_contents($file->getPathname());
 
-            // Replace namespace
-            $contents = str_replace(
-                'namespace App\\',
-                'namespace Modules\\'.$moduleName.'\\App\\',
+            // Replace the moduleName placeholder in the contents
+            $contents = str_replace('{{moduleName}}', $moduleName, $contents);
+
+            // Create the target file with replaced contents
+            $filesystem->put(
+                $targetPath.'/'.$file->getFilename(),
                 $contents
             );
-
-            $this->fileSystem->put($destination.'/'.$file->getFilename(), $contents);
         }
     }
 
-    private function installMiddleware(array $middleware): void
+    // function to copy one file from stub to target path with Replace the moduleName placeholder in the contents
+    private function copyFileWithNamespace(string $moduleName, string $stubfile, string $targetfile): void
     {
-        $kernelPath = app_path('Http/Kernel.php');
-        $kernelContents = file_get_contents($kernelPath);
-
-        foreach ($middleware as $middlewareClass) {
-            if (! str_contains($kernelContents, $middlewareClass)) {
-                $pattern = "/('web' => \[\n\s*)/";
-                $replacement = "$1        $middlewareClass,\n        ";
-                $kernelContents = preg_replace($pattern, $replacement, $kernelContents);
-            }
-        }
-
-        file_put_contents($kernelPath, $kernelContents);
+        $contents = file_get_contents($stubfile);
+        $contents = str_replace('{{moduleName}}', $moduleName, $contents);
+        file_put_contents($targetfile, $contents);
     }
 }
