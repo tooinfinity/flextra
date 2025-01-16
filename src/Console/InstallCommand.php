@@ -73,37 +73,6 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         return 1;
     }
 
-    private function copyModuleFilesWithNamespace(string $moduleName, string $stubPath, string $targetPath): void
-    {
-        $filesystem = new Filesystem;
-
-        // check if the target path exists
-        $filesystem->ensureDirectoryExists($targetPath);
-        // Get all files from the stub directory
-        $files = (new Filesystem)->allFiles($stubPath);
-
-        foreach ($files as $file) {
-            $contents = file_get_contents($file->getPathname());
-
-            // Replace the moduleName placeholder in the contents
-            $contents = str_replace('{{moduleName}}', $moduleName, $contents);
-
-            // Create the target file with replaced contents
-            $filesystem->put(
-                $targetPath.'/'.$file->getFilename(),
-                $contents
-            );
-        }
-    }
-
-    // function to copy one file from stub to target path with Replace the moduleName placeholder in the contents
-    private function copyFileWithNamespace(string $moduleName, string $stubfile, string $targetfile): void
-    {
-        $contents = file_get_contents($stubfile);
-        $contents = str_replace('{{moduleName}}', $moduleName, $contents);
-        file_put_contents($targetfile, $contents);
-    }
-
     /**
      * Prompt for missing arguments to the command.
      */
@@ -147,6 +116,37 @@ final class InstallCommand extends Command implements PromptsForMissingInput
             options: ['Pest', 'PHPUnit'],
             default: 'Pest',
         ) === 'Pest');
+    }
+
+    private function copyModuleFilesWithNamespace(string $moduleName, string $stubPath, string $targetPath): void
+    {
+        $filesystem = new Filesystem;
+
+        // check if the target path exists
+        $filesystem->ensureDirectoryExists($targetPath);
+        // Get all files from the stub directory
+        $files = (new Filesystem)->allFiles($stubPath);
+
+        foreach ($files as $file) {
+            $contents = file_get_contents($file->getPathname());
+
+            // Replace the moduleName placeholder in the contents
+            $contents = str_replace('{{moduleName}}', $moduleName, $contents);
+
+            // Create the target file with replaced contents
+            $filesystem->put(
+                $targetPath.'/'.$file->getFilename(),
+                $contents
+            );
+        }
+    }
+
+    // function to copy one file from stub to target path with Replace the moduleName placeholder in the contents
+    private function copyFileWithNamespace(string $moduleName, string $stubfile, string $targetfile): void
+    {
+        $contents = file_get_contents($stubfile);
+        $contents = str_replace('{{moduleName}}', $moduleName, $contents);
+        file_put_contents($targetfile, $contents);
     }
 
     /**

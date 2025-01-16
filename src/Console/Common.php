@@ -12,6 +12,7 @@ use InvalidArgumentException;
 final readonly class Common
 {
     private const SUPPORTED_STACKS = [
+        'common',
         'react', 'react-ts',
         'vue', 'vue-ts',
         'svelte', 'svelte-ts',
@@ -68,12 +69,6 @@ final readonly class Common
             app_path('Http/Middleware/HandleInertiaRequests.php')
         );
 
-        // Views...
-        copy(
-            $this->getStubPath().'/resources/views/app.blade.php',
-            base_path('Modules/'.$this->moduleName.'/resources/views/app.blade.php')
-        );
-
         @unlink(resource_path('views/welcome.blade.php'));
         @unlink(base_path('Modules/'.$this->moduleName.'/resources/views/welcome.blade.php'));
 
@@ -94,7 +89,7 @@ final readonly class Common
         $this->copyConfigFiles($stubPath, $modulePath);
 
         // Copy CSS files
-        $this->copyCssFiles($stubPath, $modulePath);
+        // $this->copyCssFiles($stubPath, $modulePath);
 
         // Copy TypeScript specific files if using a TypeScript stack
         if (str_contains($this->stack, '-ts')) {
@@ -113,10 +108,7 @@ final readonly class Common
 
     private function getStubPath(): string
     {
-        // Convert react-ts to react-typescript for directory structure
-        $stack = str_replace('-ts', '-typescript', $this->stack);
-
-        return __DIR__."/../../stubs/inertia-{$stack}";
+        return __DIR__."/../../stubs/inertia-{$this->stack}";
     }
 
     private function copyTypeScriptFiles(string $stubPath, string $modulePath): void
@@ -177,17 +169,6 @@ final readonly class Common
                 copy("{$stubPath}/{$file}", "{$modulePath}/{$file}");
             }
         }
-    }
-
-    private function copyCssFiles(string $stubPath, string $modulePath): void
-    {
-        $cssPath = "{$modulePath}/resources/css";
-        $this->fileSystem->ensureDirectoryExists($cssPath);
-
-        copy(
-            "{$stubPath}/resources/css/app.css",
-            "{$cssPath}/app.css"
-        );
     }
 
     private function installMiddleware(array|string $names, string $group = 'web', string $modifier = 'append'): void
