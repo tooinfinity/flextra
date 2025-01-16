@@ -50,6 +50,13 @@ trait InstallVueWithInertia
         // Copy frontend files
         $common->installAuthFrontendFiles();
 
+        // Pest Tests
+        if ($this->option('pest')) {
+            $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/pest-tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
+        } else {
+            $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
+        }
+
         if ($this->option('ssr')) {
             $this->installInertiaVueSsrStack();
         }

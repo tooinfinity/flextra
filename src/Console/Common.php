@@ -76,12 +76,6 @@ final readonly class Common
 
         @unlink(resource_path('views/welcome.blade.php'));
         @unlink(base_path('Modules/'.$this->moduleName.'/resources/views/welcome.blade.php'));
-        // Pest Tests
-        if ($this->option('pest')) {
-            $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/pest-tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
-        } else {
-            $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
-        }
 
         // Routes...
         $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/routes/web.php', base_path('Modules/'.$moduleName.'/routes/web.php'));
