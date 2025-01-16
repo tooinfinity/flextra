@@ -78,8 +78,8 @@ final readonly class Common
         @unlink(base_path('Modules/'.$this->moduleName.'/resources/views/welcome.blade.php'));
 
         // Routes...
-        $this->copyFileWithNamespace($this->moduleName, __DIR__.'/../../stubs/inertia-php/routes/web.php', base_path('Modules/'.$moduleName.'/routes/web.php'));
-        $this->copyFileWithNamespace($this->moduleName, __DIR__.'/../../stubs/inertia-php/routes/auth.php', base_path('Modules/'.$moduleName.'/routes/auth.php'));
+        $this->copyFileWithNamespace($this->moduleName, __DIR__.'/../../stubs/inertia-php/routes/web.php', base_path('Modules/'.$this->moduleName.'/routes/web.php'));
+        $this->copyFileWithNamespace($this->moduleName, __DIR__.'/../../stubs/inertia-php/routes/auth.php', base_path('Modules/'.$this->moduleName.'/routes/auth.php'));
     }
 
     public function installAuthFrontendFiles(): void
