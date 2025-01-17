@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace TooInfinity\Flextra\Console;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 
 final readonly class Common
