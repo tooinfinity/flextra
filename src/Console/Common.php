@@ -13,16 +13,18 @@ final readonly class Common
         'common',
         'react', 'react-ts',
         'vue', 'vue-ts',
-        'svelte', 'svelte-ts'
+        'svelte', 'svelte-ts',
     ];
 
     private Filesystem $fileSystem;
+
     private string $stack;
+
     private bool $isTypeScript;
 
     public function __construct(private string $moduleName, string $stack = 'react')
     {
-        $this->fileSystem = new Filesystem();
+        $this->fileSystem = new Filesystem;
         $this->validateStack($stack);
         $this->stack = $stack;
         $this->isTypeScript = str_contains($stack, '-ts');
@@ -169,10 +171,10 @@ final readonly class Common
     private function copyAndModifyAppEntry(string $stubPath, string $extension): void
     {
         $content = file_get_contents("{$stubPath}/resources/js/app.{$extension}");
-        
+
         // Modify the content to include dynamic module imports
         $content = $this->modifyAppEntryContent($content);
-        
+
         file_put_contents(
             resource_path("js/app.{$extension}"),
             $content
@@ -181,7 +183,7 @@ final readonly class Common
 
     private function modifyAppEntryContent(string $content): string
     {
-        $moduleImports = <<<EOT
+        $moduleImports = <<<'EOT'
         // Dynamic module imports
         const modules = import.meta.glob('/Modules/*/resources/assets/js/Pages/**/*.{jsx,tsx,vue,svelte}', {
             eager: true
@@ -196,19 +198,19 @@ final readonly class Common
         // Insert the module imports based on the stack
         if (str_contains($this->stack, 'vue')) {
             return str_replace(
-                "createApp({",
+                'createApp({',
                 "{$moduleImports}\n\nconst app = createApp({",
                 $content
             );
         } elseif (str_contains($this->stack, 'react')) {
             return str_replace(
-                "createInertiaApp({",
+                'createInertiaApp({',
                 "{$moduleImports}\n\ncreateInertiaApp({",
                 $content
             );
         } else { // svelte
             return str_replace(
-                "createInertiaApp({",
+                'createInertiaApp({',
                 "{$moduleImports}\n\ncreateInertiaApp({",
                 $content
             );
@@ -218,7 +220,7 @@ final readonly class Common
     private function modifyViteConfig(): void
     {
         $content = file_get_contents(base_path('vite.config.js'));
-        
+
         $moduleConfig = <<<'EOT'
             input: [
                 'resources/js/app.js',
@@ -241,47 +243,48 @@ final readonly class Common
         file_put_contents(base_path('vite.config.js'), $content);
     }
 
-    private function modifyTsConfig(): void
-    {
-        $content = json_decode(file_get_contents(base_path('tsconfig.json')), true);
-        
-        $content['compilerOptions']['paths'] = array_merge(
-            $content['compilerOptions']['paths'] ?? [],
-            [
-                "@modules/*": ["./Modules/*/resources/assets/js/*"],
-                "@/*": ["./resources/js/*"]
-            ]
-        );
+    /* private function modifyTsConfig(): void
+     {
+         $content = json_decode(file_get_contents(base_path('tsconfig.json')), true);
 
-        file_put_contents(
-            base_path('tsconfig.json'),
-            json_encode($content, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
-        );
-    }
+         $content['compilerOptions']['paths'] = array_merge(
+             $content['compilerOptions']['paths'] ?? [],
+             [
+                 "@modules/*": ['./Modules/*"/\resources/assets/\"js/*'],
+                 "@/*": ["./resources/js/*"]
+             ]
+         );
 
-    private function modifyJsConfig(): void
-    {
-        $content = json_decode(file_get_contents(base_path('jsconfig.json')), true);
-        
-        $content['compilerOptions']['paths'] = array_merge(
-            $content['compilerOptions']['paths'] ?? [],
-            [
-                "@modules/*": ["./Modules/*/resources/assets/js/*"],
-                "@/*": ["./resources/js/*"]
-            ]
-        );
+         file_put_contents(
+             base_path('tsconfig.json'),
+             json_encode($content, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+         );
+     }*/
 
-        file_put_contents(
-            base_path('jsconfig.json'),
-            json_encode($content, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
-        );
-    }
+    /* private function modifyJsConfig(): void
+     {
+         $content = json_decode(file_get_contents(base_path('jsconfig.json')), true);
+
+         $content['compilerOptions']['paths'] = array_merge(
+             $content['compilerOptions']['paths'] ?? [],
+             [
+                 "@modules/*": ['./Modules/*"/\resources/assets/\"js/*'],
+                 "@/*": ["./resources/js/*"]
+             ]
+         );
+
+         file_put_contents(
+             base_path('jsconfig.json'),
+             json_encode($content, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+         );
+     }*/
 
     private function getEntryFileExtension(): string
     {
         if (str_contains($this->stack, '-ts')) {
             return str_contains($this->stack, 'react') ? 'tsx' : 'ts';
         }
+
         return str_contains($this->stack, 'react') ? 'jsx' : 'js';
     }
 
@@ -292,9 +295,9 @@ final readonly class Common
 
     private function validateStack(string $stack): void
     {
-        if (!in_array($stack, self::SUPPORTED_STACKS)) {
+        if (! in_array($stack, self::SUPPORTED_STACKS)) {
             throw new InvalidArgumentException(
-                "Invalid stack: {$stack}. Supported stacks are: " . implode(', ', self::SUPPORTED_STACKS)
+                "Invalid stack: {$stack}. Supported stacks are: ".implode(', ', self::SUPPORTED_STACKS)
             );
         }
     }
