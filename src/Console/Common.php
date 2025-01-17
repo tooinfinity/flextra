@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace TooInfinity\Flextra\Console;
 
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
 
 final readonly class Common
@@ -15,18 +13,19 @@ final readonly class Common
         'common',
         'react', 'react-ts',
         'vue', 'vue-ts',
-        'svelte', 'svelte-ts',
+        'svelte', 'svelte-ts'
     ];
 
     private Filesystem $fileSystem;
-
     private string $stack;
+    private bool $isTypeScript;
 
     public function __construct(private string $moduleName, string $stack = 'react')
     {
-        $this->fileSystem = new Filesystem;
+        $this->fileSystem = new Filesystem();
         $this->validateStack($stack);
         $this->stack = $stack;
+        $this->isTypeScript = str_contains($stack, '-ts');
     }
 
     public function installAuthBackendFiles(): void
@@ -80,30 +79,210 @@ final readonly class Common
     public function installAuthFrontendFiles(): void
     {
         $stubPath = $this->getStubPath();
-        $modulePath = base_path('Modules/'.$this->moduleName);
+        $modulePath = "Modules/{$this->moduleName}";
 
-        // Copy JS/TS files
-        $this->copyFrontendDirectories($stubPath, $modulePath);
+        // 1. Copy Breeze pages to module
+        $this->copyModulePages($stubPath, $modulePath);
 
-        // Copy configuration files
-        $this->copyConfigFiles($stubPath, $modulePath);
+        // 2. Copy Types to module if TypeScript
+        if ($this->isTypeScript) {
+            $this->copyModuleTypes($stubPath, $modulePath);
+        }
 
-        // Copy CSS files
-        // $this->copyCssFiles($stubPath, $modulePath);
+        // 3. Copy Components to module
+        $this->copyModuleComponents($stubPath, $modulePath);
 
-        // Copy TypeScript specific files if using a TypeScript stack
-        if (str_contains($this->stack, '-ts')) {
-            $this->copyTypeScriptFiles($stubPath, $modulePath);
+        // 4. Setup main app files
+        $this->setupMainAppFiles($stubPath);
+
+        // 5. Setup config files
+        $this->setupConfigFiles($stubPath);
+    }
+
+    private function copyModulePages(string $stubPath, string $modulePath): void
+    {
+        $this->fileSystem->ensureDirectoryExists(base_path("{$modulePath}/resources/assets/js/Pages"));
+        $this->fileSystem->copyDirectory(
+            "{$stubPath}/resources/js/Pages",
+            base_path("{$modulePath}/resources/assets/js/Pages")
+        );
+    }
+
+    private function copyModuleTypes(string $stubPath, string $modulePath): void
+    {
+        $this->fileSystem->ensureDirectoryExists(base_path("{$modulePath}/resources/assets/js/types"));
+        $this->fileSystem->copyDirectory(
+            "{$stubPath}/resources/js/types",
+            base_path("{$modulePath}/resources/assets/js/types")
+        );
+    }
+
+    private function copyModuleComponents(string $stubPath, string $modulePath): void
+    {
+        $this->fileSystem->ensureDirectoryExists(base_path("{$modulePath}/resources/assets/js/Components"));
+        $this->fileSystem->copyDirectory(
+            "{$stubPath}/resources/js/Components",
+            base_path("{$modulePath}/resources/assets/js/Components")
+        );
+    }
+
+    private function setupMainAppFiles(string $stubPath): void
+    {
+        // Copy app.blade.php to main Laravel views
+        $this->fileSystem->ensureDirectoryExists(resource_path('views'));
+        copy(
+            "{$stubPath}/resources/views/app.blade.php",
+            resource_path('views/app.blade.php')
+        );
+
+        // Copy and modify app entry file
+        $extension = $this->getEntryFileExtension();
+        $this->fileSystem->ensureDirectoryExists(resource_path('js'));
+        $this->copyAndModifyAppEntry($stubPath, $extension);
+    }
+
+    private function setupConfigFiles(string $stubPath): void
+    {
+        // Copy and modify vite config
+        copy(
+            "{$stubPath}/vite.config.js",
+            base_path('vite.config.js')
+        );
+        $this->modifyViteConfig();
+
+        // Copy and modify TS/JS config
+        if ($this->isTypeScript) {
+            copy(
+                "{$stubPath}/tsconfig.json",
+                base_path('tsconfig.json')
+            );
+            $this->modifyTsConfig();
+        } else {
+            copy(
+                "{$stubPath}/jsconfig.json",
+                base_path('jsconfig.json')
+            );
+            $this->modifyJsConfig();
         }
     }
 
-    private function validateStack(string $stack): void
+    private function copyAndModifyAppEntry(string $stubPath, string $extension): void
     {
-        if (! in_array($stack, self::SUPPORTED_STACKS)) {
-            throw new InvalidArgumentException(
-                "Invalid stack: {$stack}. Supported stacks are: ".implode(', ', self::SUPPORTED_STACKS)
+        $content = file_get_contents("{$stubPath}/resources/js/app.{$extension}");
+        
+        // Modify the content to include dynamic module imports
+        $content = $this->modifyAppEntryContent($content);
+        
+        file_put_contents(
+            resource_path("js/app.{$extension}"),
+            $content
+        );
+    }
+
+    private function modifyAppEntryContent(string $content): string
+    {
+        $moduleImports = <<<EOT
+        // Dynamic module imports
+        const modules = import.meta.glob('/Modules/*/resources/assets/js/Pages/**/*.{jsx,tsx,vue,svelte}', {
+            eager: true
+        });
+        
+        // Register global components
+        const components = import.meta.glob('/Modules/*/resources/assets/js/Components/**/*.{jsx,tsx,vue,svelte}', {
+            eager: true
+        });
+        EOT;
+
+        // Insert the module imports based on the stack
+        if (str_contains($this->stack, 'vue')) {
+            return str_replace(
+                "createApp({",
+                "{$moduleImports}\n\nconst app = createApp({",
+                $content
+            );
+        } elseif (str_contains($this->stack, 'react')) {
+            return str_replace(
+                "createInertiaApp({",
+                "{$moduleImports}\n\ncreateInertiaApp({",
+                $content
+            );
+        } else { // svelte
+            return str_replace(
+                "createInertiaApp({",
+                "{$moduleImports}\n\ncreateInertiaApp({",
+                $content
             );
         }
+    }
+
+    private function modifyViteConfig(): void
+    {
+        $content = file_get_contents(base_path('vite.config.js'));
+        
+        $moduleConfig = <<<'EOT'
+            input: [
+                'resources/js/app.js',
+                'Modules/*/resources/assets/js/app.js'
+            ],
+            resolve: {
+                alias: {
+                    '@': '/resources/js',
+                    '@modules': '/Modules'
+                }
+            },
+        EOT;
+
+        $content = str_replace(
+            "input: 'resources/js/app.js',",
+            $moduleConfig,
+            $content
+        );
+
+        file_put_contents(base_path('vite.config.js'), $content);
+    }
+
+    private function modifyTsConfig(): void
+    {
+        $content = json_decode(file_get_contents(base_path('tsconfig.json')), true);
+        
+        $content['compilerOptions']['paths'] = array_merge(
+            $content['compilerOptions']['paths'] ?? [],
+            [
+                "@modules/*": ["./Modules/*/resources/assets/js/*"],
+                "@/*": ["./resources/js/*"]
+            ]
+        );
+
+        file_put_contents(
+            base_path('tsconfig.json'),
+            json_encode($content, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+        );
+    }
+
+    private function modifyJsConfig(): void
+    {
+        $content = json_decode(file_get_contents(base_path('jsconfig.json')), true);
+        
+        $content['compilerOptions']['paths'] = array_merge(
+            $content['compilerOptions']['paths'] ?? [],
+            [
+                "@modules/*": ["./Modules/*/resources/assets/js/*"],
+                "@/*": ["./resources/js/*"]
+            ]
+        );
+
+        file_put_contents(
+            base_path('jsconfig.json'),
+            json_encode($content, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+        );
+    }
+
+    private function getEntryFileExtension(): string
+    {
+        if (str_contains($this->stack, '-ts')) {
+            return str_contains($this->stack, 'react') ? 'tsx' : 'ts';
+        }
+        return str_contains($this->stack, 'react') ? 'jsx' : 'js';
     }
 
     private function getStubPath(): string
@@ -111,87 +290,13 @@ final readonly class Common
         return __DIR__."/../../stubs/inertia-{$this->stack}";
     }
 
-    private function copyTypeScriptFiles(string $stubPath, string $modulePath): void
+    private function validateStack(string $stack): void
     {
-        $tsFiles = [
-            'tsconfig.json',
-            'types/index.d.ts',
-            'types/global.d.ts',
-        ];
-
-        foreach ($tsFiles as $file) {
-            $sourcePath = "{$stubPath}/{$file}";
-            $destPath = "{$modulePath}/{$file}";
-
-            if (file_exists($sourcePath)) {
-                $this->fileSystem->ensureDirectoryExists(dirname($destPath));
-                copy($sourcePath, $destPath);
-            }
+        if (!in_array($stack, self::SUPPORTED_STACKS)) {
+            throw new InvalidArgumentException(
+                "Invalid stack: {$stack}. Supported stacks are: " . implode(', ', self::SUPPORTED_STACKS)
+            );
         }
-    }
-
-    private function copyFrontendDirectories(string $stubPath, string $modulePath): void
-    {
-        $directories = ['Components', 'Layouts', 'Pages', 'Types'];
-
-        foreach ($directories as $dir) {
-            if ($dir === 'Types' && ! str_contains($this->stack, '-ts')) {
-                continue;
-            }
-
-            $sourceDir = "{$stubPath}/resources/js/{$dir}";
-            $destDir = "{$modulePath}/resources/js/{$dir}";
-
-            if (is_dir($sourceDir)) {
-                $this->fileSystem->copyDirectory($sourceDir, $destDir);
-            }
-        }
-    }
-
-    private function copyConfigFiles(string $stubPath, string $modulePath): void
-    {
-        $configFiles = [
-            'postcss.config.js',
-            'tailwind.config.js',
-            'vite.config.js',
-            'package.json',
-        ];
-
-        // Add TypeScript specific config files if using TypeScript
-        if (str_contains($this->stack, '-ts')) {
-            $configFiles[] = 'tsconfig.json';
-        }
-
-        $this->fileSystem->ensureDirectoryExists($modulePath);
-
-        foreach ($configFiles as $file) {
-            if (file_exists("{$stubPath}/{$file}")) {
-                copy("{$stubPath}/{$file}", "{$modulePath}/{$file}");
-            }
-        }
-    }
-
-    private function installMiddleware(array|string $names, string $group = 'web', string $modifier = 'append'): void
-    {
-        $bootstrapApp = file_get_contents(base_path('bootstrap/app.php'));
-
-        collect(Arr::wrap($names))
-            ->filter(fn ($name): bool => ! Str::contains($bootstrapApp, $name))
-            ->whenNotEmpty(function ($names) use ($bootstrapApp, $group, $modifier): void {
-                $names = $names->map(fn ($name): string => "$name")->implode(','.PHP_EOL.'            ');
-
-                $bootstrapApp = str_replace(
-                    '->withMiddleware(function (Middleware $middleware) {',
-                    '->withMiddleware(function (Middleware $middleware) {'
-                    .PHP_EOL."        \$middleware->$group($modifier: ["
-                    .PHP_EOL."            $names,"
-                    .PHP_EOL.'        ]);'
-                    .PHP_EOL,
-                    $bootstrapApp,
-                );
-
-                file_put_contents(base_path('bootstrap/app.php'), $bootstrapApp);
-            });
     }
 
     private function copyModuleFilesWithNamespace(string $moduleName, string $stubPath, string $targetPath): void
@@ -223,5 +328,28 @@ final readonly class Common
         $contents = file_get_contents($stubfile);
         $contents = str_replace('{{moduleName}}', $moduleName, $contents);
         file_put_contents($targetfile, $contents);
+    }
+
+    private function installMiddleware(array|string $names, string $group = 'web', string $modifier = 'append'): void
+    {
+        $bootstrapApp = file_get_contents(base_path('bootstrap/app.php'));
+
+        collect(Arr::wrap($names))
+            ->filter(fn ($name): bool => ! Str::contains($bootstrapApp, $name))
+            ->whenNotEmpty(function ($names) use ($bootstrapApp, $group, $modifier): void {
+                $names = $names->map(fn ($name): string => "$name")->implode(','.PHP_EOL.'            ');
+
+                $bootstrapApp = str_replace(
+                    '->withMiddleware(function (Middleware $middleware) {',
+                    '->withMiddleware(function (Middleware $middleware) {'
+                    .PHP_EOL."        \$middleware->$group($modifier: ["
+                    .PHP_EOL."            $names,"
+                    .PHP_EOL.'        ]);'
+                    .PHP_EOL,
+                    $bootstrapApp,
+                );
+
+                file_put_contents(base_path('bootstrap/app.php'), $bootstrapApp);
+            });
     }
 }
