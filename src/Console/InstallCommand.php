@@ -416,7 +416,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
 
                 export interface User {
                 EOT,
-                base_path('Modules/'.$moduleName.'/js/types/index.d.ts')
+                base_path('Modules/'.$moduleName.'/resources/assets/js/types/index.d.ts')
             );
 
             $this->replaceInFile(
@@ -431,7 +431,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
                     };
                     ziggy: Config & { location: string };
                 EOT,
-                base_path('Modules/'.$moduleName.'/js/types/index.d.ts')
+                base_path('Modules/'.$moduleName.'/resources/assets/js/types/index.d.ts')
             );
         }
     }
