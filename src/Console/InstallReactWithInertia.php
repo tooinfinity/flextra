@@ -104,6 +104,7 @@ trait InstallReactWithInertia
 
         if ($this->option('typescript')) {
             $fileSystem->ensureDirectoryExists(resource_path('js/types'));
+            $fileSystem->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/types'));
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Layouts', base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Pages', base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));

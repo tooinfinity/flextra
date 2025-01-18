@@ -76,7 +76,7 @@ trait InstallVueWithInertia
         $this->installAuthBackendFiles($moduleName);
 
         // Views...
-        copy(__DIR__.'/../../stubs/inertia-vue/resources/views/app.blade.php', base_path('Modules/'.$moduleName.'/resources/views/app.blade.php'));
+        copy(__DIR__.'/../../stubs/inertia-vue/resources/views/app.blade.php', resource_path('views/app.blade.php'));
 
         @unlink(resource_path('views/welcome.blade.php'));
         @unlink(base_path('Modules/'.$moduleName.'/resources/views/welcome.blade.php'));
@@ -85,19 +85,21 @@ trait InstallVueWithInertia
         (new Filesystem)->ensureDirectoryExists(resource_path('js/Components'));
         (new Filesystem)->ensureDirectoryExists(resource_path('js/Layouts'));
         (new Filesystem)->ensureDirectoryExists(resource_path('js/Pages'));
+
         (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
         (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
         (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
 
         if ($this->option('typescript')) {
-            (new Filesystem)->ensureDirectoryExists(resource_path('js/Types'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/Components', base_path('Modules/'.$moduleName.'js/Components'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/Layouts', base_path('Modules/'.$moduleName.'js/Layouts'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/types', base_path('Modules/'.$moduleName.'js/types'));
+            (new Filesystem)->ensureDirectoryExists(resource_path('js/types'));
+            (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/types'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/Layouts', base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/types', base_path('Modules/'.$moduleName.'/resources/assets/js/types'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/Pages', base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
         } else {
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue/resources/js/Components', base_path('Modules/'.$moduleName.'js/Components'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue/resources/js/Layouts', base_path('Modules/'.$moduleName.'js/Layouts'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/s/Components'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue/resources/js/Layouts', base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue/resources/js/Pages', base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
         }
 
