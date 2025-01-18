@@ -109,10 +109,10 @@ trait InstallReactWithInertia
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Layouts', base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Pages', base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
-            $file = new File;
-            $file->copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types/index.d.ts', base_path('Modules/'.$moduleName.'/resources/assets/js/types/index.d.ts'));
-            $file->copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types/global.d.ts', resource_path('Modules/'.$moduleName.'/resources/assets/js/types/global.d.ts'));
-            $file->copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types/vite-env.d.ts', resource_path('Modules/'.$moduleName.'/resources/assets/js/types/vite.d.ts'));
+
+            File::copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types/index.d.ts', base_path('Modules/'.$moduleName.'/resources/assets/js/types/index.d.ts'));
+            File::copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types/global.d.ts', resource_path('Modules/'.$moduleName.'/resources/assets/js/types/global.d.ts'));
+            File::copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types/vite-env.d.ts', resource_path('Modules/'.$moduleName.'/resources/assets/js/types/vite.d.ts'));
         } else {
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Layouts', base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
