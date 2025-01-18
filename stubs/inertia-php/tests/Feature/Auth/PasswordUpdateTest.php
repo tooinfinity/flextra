@@ -1,15 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Modules\{{moduleName}}\Tests\Feature\Auth;
+namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
-final class PasswordUpdateTest extends TestCase
+class PasswordUpdateTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -47,7 +45,7 @@ final class PasswordUpdateTest extends TestCase
             ]);
 
         $response
-            ->assertSessionHasErrors('current_password')
+            ->assertSessionHasErrorsIn('updatePassword', 'current_password')
             ->assertRedirect('/profile');
     }
 }

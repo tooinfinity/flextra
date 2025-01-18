@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 use App\Models\User;
 
 test('profile page is displayed', function () {
@@ -80,7 +78,7 @@ test('correct password must be provided to delete account', function () {
         ]);
 
     $response
-        ->assertSessionHasErrors('password')
+        ->assertSessionHasErrorsIn('userDeletion', 'password')
         ->assertRedirect('/profile');
 
     $this->assertNotNull($user->fresh());

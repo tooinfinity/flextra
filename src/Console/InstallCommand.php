@@ -175,9 +175,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
 
         $stubStack = match ($this->argument('stack')) {
             'api' => 'api',
-            'livewire' => 'livewire-common',
-            'livewire-functional' => 'livewire-common',
-            default => 'default',
+            default => 'inertia-php',
         };
 
         if ($this->option('pest') || $this->isUsingPest()) {

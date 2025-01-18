@@ -129,9 +129,9 @@ trait InstallReactWithInertia
         }
 
         if ($this->option('pest')) {
-            $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/pest-tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-php/pest-tests/Feature', base_path('tests/Feature'));
         } else {
-            $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-php/tests/Feature', base_path('tests/Feature'));
         }
 
         // Tailwind / Vite...
