@@ -375,7 +375,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     /**
      * Configure Ziggy for SSR.
      */
-    private function configureZiggyForSsr(): void
+    private function configureZiggyForSsr($moduleName): void
     {
         $this->replaceInFile(
             <<<'EOT'
@@ -416,7 +416,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
 
                 export interface User {
                 EOT,
-                resource_path('js/types/index.d.ts')
+                base_path('Modules/'.$moduleName.'/js/types/index.d.ts')
             );
 
             $this->replaceInFile(
@@ -431,7 +431,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
                     };
                     ziggy: Config & { location: string };
                 EOT,
-                resource_path('js/types/index.d.ts')
+                base_path('Modules/'.$moduleName.'/js/types/index.d.ts')
             );
         }
     }

@@ -95,8 +95,10 @@ trait InstallVueWithInertia
             (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/types'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/Layouts', base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/types', base_path('Modules/'.$moduleName.'/resources/assets/js/types'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/Pages', base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
+            copy(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/types/index.d.ts', base_path('Modules'.$moduleName.'/resources/assets/js/types/index.d.ts'));
+            copy(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/types/global.d.ts', resource_path('Modules'.$moduleName.'/resources/assets/js/types/global.d.ts'));
+            copy(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/types/vite-env.d.ts', resource_path('Modules'.$moduleName.'/resources/assets/js/types/vite.d.ts'));
         } else {
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/s/Components'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue/resources/js/Layouts', base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
@@ -149,7 +151,7 @@ trait InstallVueWithInertia
         }
 
         if ($this->option('ssr')) {
-            $this->installModuleInertiaVueSsr();
+            $this->installModuleInertiaVueSsr($moduleName);
         }
 
         $this->components->info('Installing and building Node dependencies.');
@@ -173,7 +175,7 @@ trait InstallVueWithInertia
     /**
      * Install the Inertia Vue SSR stack into the application.
      */
-    protected function installModuleInertiaVueSsr(): void
+    protected function installModuleInertiaVueSsr($moduleName): void
     {
         $this->updateNodePackages(fn ($packages) => [
             '@vue/server-renderer' => '^3.4.0',
@@ -187,7 +189,7 @@ trait InstallVueWithInertia
             $this->replaceInFile("input: 'resources/js/app.js',", "input: 'resources/js/app.js',".PHP_EOL."            ssr: 'resources/js/ssr.js',", base_path('vite.config.js'));
         }
 
-        $this->configureZiggyForSsr();
+        $this->configureZiggyForSsr($moduleName);
 
         $this->replaceInFile('vite build', 'vite build && vite build --ssr', base_path('package.json'));
         $this->replaceInFile('/node_modules', '/bootstrap/ssr'.PHP_EOL.'/node_modules', base_path('.gitignore'));

@@ -108,7 +108,9 @@ trait InstallReactWithInertia
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Layouts', base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Pages', base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
-            $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types', base_path('Modules'.$moduleName.'/resources/assets/js/types'));
+            copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types/index.d.ts', base_path('Modules'.$moduleName.'/resources/assets/js/types/index.d.ts'));
+            copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types/global.d.ts', resource_path('Modules'.$moduleName.'/resources/assets/js/types/global.d.ts'));
+            copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types/vite-env.d.ts', resource_path('Modules'.$moduleName.'/resources/assets/js/types/vite.d.ts'));
         } else {
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Layouts', base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
@@ -165,7 +167,7 @@ trait InstallReactWithInertia
         }
 
         if ($this->option('ssr')) {
-            $this->installModuleInertiaReactSsr();
+            $this->installModuleInertiaReactSsr($moduleName);
         }
 
         $this->components->info('Installing and building Node dependencies.');
@@ -191,7 +193,7 @@ trait InstallReactWithInertia
     /**
      * Install the Inertia React SSR stack into the application.
      */
-    protected function installModuleInertiaReactSsr(): void
+    protected function installModuleInertiaReactSsr($moduleName): void
     {
         if ($this->option('typescript')) {
             copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/ssr.tsx', resource_path('js/ssr.tsx'));
@@ -203,7 +205,7 @@ trait InstallReactWithInertia
             $this->configureReactHydrateRootForSsr(resource_path('js/app.jsx'));
         }
 
-        $this->configureZiggyForSsr();
+        $this->configureZiggyForSsr($moduleName);
 
         $this->replaceInFile('vite build', 'vite build && vite build --ssr', base_path('package.json'));
         $this->replaceInFile('/node_modules', '/bootstrap/ssr'.PHP_EOL.'/node_modules', base_path('.gitignore'));
