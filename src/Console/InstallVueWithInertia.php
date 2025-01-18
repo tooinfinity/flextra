@@ -17,12 +17,7 @@ trait InstallVueWithInertia
         // Install Module Dependencies first
         $this->installModuleDependencies();
 
-        // Initialize Common with appropriate stack
-        $stack = $this->option('typescript') ? 'vue-ts' : 'vue';
-        $common = new Common($moduleName, $stack);
-
         // Install Inertia and its dependencies...
-        // Install Inertia...
         if (! $this->requireComposerPackages(['inertiajs/inertia-laravel:^2.0', 'laravel/sanctum:^4.0', 'tightenco/ziggy:^2.0'])) {
             return 1;
         }
@@ -78,7 +73,7 @@ trait InstallVueWithInertia
         }
 
         // Copy backend files
-        $common->installAuthBackendFiles();
+        $this->installAuthBackendFiles($moduleName);
 
         // Views...
         copy(__DIR__.'/../../stubs/inertia-vue/resources/views/app.blade.php', base_path('Modules/'.$moduleName.'/resources/views/app.blade.php'));
@@ -95,14 +90,14 @@ trait InstallVueWithInertia
         (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
 
         if ($this->option('typescript')) {
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/Components', resource_path('js/Components'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/Layouts', resource_path('js/Layouts'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/types', resource_path('js/types'));
+            (new Filesystem)->ensureDirectoryExists(resource_path('js/Types'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/Components', base_path('Modules/'.$moduleName.'js/Components'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/Layouts', base_path('Modules/'.$moduleName.'js/Layouts'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/types', base_path('Modules/'.$moduleName.'js/types'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/Pages', base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/types', base_path('Modules'.$moduleName.'/resources/assets/js/types'));
         } else {
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue/resources/js/Components', resource_path('js/Components'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue/resources/js/Layouts', resource_path('js/Layouts'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue/resources/js/Components', base_path('Modules/'.$moduleName.'js/Components'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue/resources/js/Layouts', base_path('Modules/'.$moduleName.'js/Layouts'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue/resources/js/Pages', base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
         }
 
@@ -114,6 +109,11 @@ trait InstallVueWithInertia
                 ->notName('Welcome.vue')
             );
         }
+        // Tests...
+        if (! $this->installTests()) {
+            return 1;
+        }
+
         if ($this->option('pest')) {
             $this->copyModuleFilesWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/pest-tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
         } else {
@@ -129,7 +129,6 @@ trait InstallVueWithInertia
         if ($this->option('typescript')) {
             copy(__DIR__.'/../../stubs/inertia-vue-ts/tsconfig.json', base_path('tsconfig.json'));
             copy(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/app.ts', resource_path('js/app.ts'));
-            copy(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/app.ts', base_path('Modules/'.$moduleName.'/resources/assets/js/app.ts'));
 
             if (file_exists(resource_path('js/app.js'))) {
                 unlink(resource_path('js/app.js'));
@@ -141,7 +140,7 @@ trait InstallVueWithInertia
 
             $this->replaceInFile('"vite build', '"vue-tsc && vite build', base_path('package.json'));
             $this->replaceInFile('.js', '.ts', base_path('vite.config.js'));
-            $this->replaceInFile('.js', '.ts', base_path('Modules/'.$moduleName.'/resources/views/app.blade.php'));
+            $this->replaceInFile('.js', '.ts', resource_path('views/app.blade.php'));
         } else {
             copy(__DIR__.'/../../stubs/inertia-common/jsconfig.json', base_path('jsconfig.json'));
             copy(__DIR__.'/../../stubs/inertia-vue/resources/js/app.js', resource_path('js/app.js'));

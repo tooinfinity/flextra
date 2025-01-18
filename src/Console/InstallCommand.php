@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
@@ -73,6 +72,55 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         return 1;
     }
 
+    public function installAuthBackendFiles($moduleName): void
+    {
+        $fileSystem = (new Filesystem);
+        // Providers...
+        $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-php/Providers', app_path('Providers'));
+
+        // Controllers...
+        $this->copyModuleFilesWithNamespace(
+            $this->moduleName,
+            __DIR__.'/../../stubs/inertia-php/Auth/Controllers',
+            base_path('Modules/'.$moduleName.'/app/Http/Controllers')
+        );
+        $this->copyModuleFilesWithNamespace(
+            $this->moduleName,
+            __DIR__.'/../../stubs/inertia-php/Profile/Controllers',
+            base_path('Modules/'.$moduleName.'/app/Http/Controllers')
+        );
+        // Requests...
+        $this->copyModuleFilesWithNamespace(
+            $this->moduleName,
+            __DIR__.'/../../stubs/inertia-php/Auth/Requests',
+            base_path('Modules/'.$moduleName.'/app/Http/Requests')
+        );
+        $this->copyModuleFilesWithNamespace(
+            $this->moduleName,
+            __DIR__.'/../../stubs/inertia-php/Profile/Requests',
+            base_path('Modules/'.$moduleName.'/app/Http/Requests')
+        );
+
+        // Middleware...
+        $this->installMiddleware([
+            '\App\Http\Middleware\HandleInertiaRequests::class',
+            '\Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class',
+        ]);
+
+        $fileSystem->ensureDirectoryExists(app_path('Http/Middleware'));
+        copy(
+            __DIR__.'/../../stubs/inertia-php/Middleware/HandleInertiaRequests.php',
+            app_path('Http/Middleware/HandleInertiaRequests.php')
+        );
+
+        @unlink(resource_path('views/welcome.blade.php'));
+        @unlink(base_path('Modules/'.$moduleName.'/resources/views/welcome.blade.php'));
+
+        // Routes...
+        $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/routes/web.php', base_path('Modules/'.$moduleName.'/routes/web.php'));
+        $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/routes/auth.php', base_path('Modules/'.$moduleName.'/routes/auth.php'));
+    }
+
     /**
      * Prompt for missing arguments to the command.
      */
@@ -118,6 +166,42 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         ) === 'Pest');
     }
 
+    /**
+     * install module-inertia-react tests from stub
+     */
+    protected function installTests(): bool
+    {
+        (new Filesystem)->ensureDirectoryExists(base_path('tests/Feature'));
+
+        $stubStack = match ($this->argument('stack')) {
+            'api' => 'api',
+            'livewire' => 'livewire-common',
+            'livewire-functional' => 'livewire-common',
+            default => 'default',
+        };
+
+        if ($this->option('pest') || $this->isUsingPest()) {
+            if ($this->hasComposerPackage('phpunit/phpunit')) {
+                $this->removeComposerPackages(['phpunit/phpunit'], true);
+            }
+
+            if (! $this->requireComposerPackages(['pestphp/pest', 'pestphp/pest-plugin-laravel'], true)) {
+                return false;
+            }
+
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/'.$stubStack.'/pest-tests/Feature', base_path('tests/Feature'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/'.$stubStack.'/pest-tests/Unit', base_path('tests/Unit'));
+            (new Filesystem)->copy(__DIR__.'/../../stubs/'.$stubStack.'/pest-tests/Pest.php', base_path('tests/Pest.php'));
+        } else {
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/'.$stubStack.'/tests/Feature', base_path('tests/Feature'));
+        }
+
+        return true;
+    }
+
+    /**
+     * Copy Stubs with modified namespace
+     */
     private function copyModuleFilesWithNamespace(string $moduleName, string $stubPath, string $targetPath): void
     {
         $filesystem = new Filesystem;
@@ -141,7 +225,9 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         }
     }
 
-    // function to copy one file from stub to target path with Replace the moduleName placeholder in the contents
+    /**
+     * function to copy one file from stub to target path with Replace the moduleName placeholder in the contents
+     */
     private function copyFileWithNamespace(string $moduleName, string $stubfile, string $targetfile): void
     {
         $contents = file_get_contents($stubfile);
@@ -260,36 +346,6 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         $process->run(function ($type, string $line): void {
             $this->output->write('    '.$line);
         });
-    }
-
-    /**
-     * install module-inertia-react tests from stub
-     */
-    private function installTests(): bool
-    {
-        (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/tests/Feature'));
-
-        $stubStack = match ($this->argument('stack')) {
-            'react' => 'react',
-            'vue' => 'vue',
-            'svelte' => 'svelte',
-            default => throw new InvalidArgumentException('Invalid stack. Supported stacks are [react], [vue], and [svelte].'),
-        };
-        if ($this->option('pest') || $this->isUsingPest()) {
-            if ($this->hasComposerPackage('phpunit/phpunit')) {
-                $this->removeComposerPackage((array) 'phpunit/phpunit', true);
-            }
-            if (! $this->requireComposerPackages(['pestphp/pest', 'pestphp/pest-plugin-laravel'], true)) {
-                return false;
-            }
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/'.$stubStack.'/pest-tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/'.$stubStack.'/pest-tests/Unit', base_path('Modules/'.$moduleName.'/tests/Unit'));
-            (new Filesystem)->copy(__DIR__.'/../../stubs/'.$stubStack.'/pest-tests/Pest.php', base_path('Modules/'.$moduleName.'/tests/Pest.php'));
-        } else {
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/'.$stubStack.'/tests/Feature', base_path('Modules/'.$moduleName.'/tests/Feature'));
-        }
-
-        return true;
     }
 
     /**
@@ -455,7 +511,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     /**
      * Remove the given Composer packages from the application.
      */
-    private function removeComposerPackage(array $packages, bool $asDev = false): bool
+    private function removeComposerPackages(array $packages, bool $asDev = false): bool
     {
         $composer = $this->option('composer');
 
