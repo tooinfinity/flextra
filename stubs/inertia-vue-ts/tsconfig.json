@@ -12,8 +12,8 @@
         "noEmit": true,
         "skipLibCheck": true,
         "paths": {
-            "@/*": ["./resources/js/*"],
-            "@auth/*": ["./Modules/Auth/resources/assets/js/*"],
+            "@/*": ["resources/js/*"],
+            "@auth/*": ["Modules/Auth/resources/assets/js/*"],
             "ziggy-js": ["./vendor/tightenco/ziggy"]
         }
     },

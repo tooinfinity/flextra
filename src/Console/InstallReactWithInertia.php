@@ -102,8 +102,12 @@ trait InstallReactWithInertia
         $fileSystem->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
         $fileSystem->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
         $fileSystem->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
+        $fileSystem->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/css'));
+        copy(__DIR__.'/../../stubs/inertia-module/css/module.css', base_path('Modules/'.$moduleName.'/resources/assets/css/module.css'));
 
         if ($this->option('typescript')) {
+            $fileSystem->delete(base_path('Modules/'.$moduleName.'/resources/assets/js/app.js'));
+            copy(__DIR__.'/../../stubs/inertia-module/react-ts/app.tsx', base_path('Modules/'.$moduleName.'/resources/assets/js/app.tsx'));
             $fileSystem->ensureDirectoryExists(resource_path('js/types'));
             $fileSystem->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/types'));
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react-ts/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
@@ -114,6 +118,8 @@ trait InstallReactWithInertia
             File::copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types/global.d.ts', base_path('Modules/'.$moduleName.'/resources/assets/js/types/global.d.ts'));
             File::copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/types/vite-env.d.ts', base_path('Modules/'.$moduleName.'/resources/assets/js/types/vite.d.ts'));
         } else {
+            $fileSystem->delete(base_path('Modules/'.$moduleName.'/resources/assets/js/app.js'));
+            copy(__DIR__.'/../../stubs/inertia-module/react/app.jsx', base_path('Modules/'.$moduleName.'/resources/assets/js/app.jsx'));
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Layouts', base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
             $fileSystem->copyDirectory(__DIR__.'/../../stubs/inertia-react/resources/js/Pages', base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));

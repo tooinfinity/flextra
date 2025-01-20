@@ -90,8 +90,12 @@ trait InstallVueWithInertia
         (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
         (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
         (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
+        (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/css'));
+        copy(__DIR__.'/../../stubs/inertia-module/css/module.css', base_path('Modules/'.$moduleName.'/resources/assets/css/module.css'));
 
         if ($this->option('typescript')) {
+            (new Filesystem)->delete(base_path('Modules/'.$moduleName.'/resources/assets/js/app.js'));
+            copy(__DIR__.'/../../stubs/inertia-module/vue/app.ts', base_path('Modules/'.$moduleName.'/resources/assets/js/app.ts'));
             (new Filesystem)->ensureDirectoryExists(resource_path('js/types'));
             (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/types'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
@@ -102,6 +106,8 @@ trait InstallVueWithInertia
             File::copy(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/types/global.d.ts', base_path('Modules/'.$moduleName.'/resources/assets/js/types/global.d.ts'));
             File::copy(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/types/vite-env.d.ts', base_path('Modules/'.$moduleName.'/resources/assets/js/types/vite.d.ts'));
         } else {
+            (new Filesystem)->delete(base_path('Modules/'.$moduleName.'/resources/assets/js/app.js'));
+            copy(__DIR__.'/../../stubs/inertia-module/react/app.js', base_path('Modules/'.$moduleName.'/resources/assets/js/app.js'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/s/Components'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue/resources/js/Layouts', base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue/resources/js/Pages', base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
