@@ -6,6 +6,7 @@ namespace Modules\{{moduleName}}\Http\Controllers;
 
 use Modules\{{moduleName}}\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
