@@ -11,7 +11,7 @@ const getModuleEntries = () => {
 
     return fs.readdirSync(modulesPath)
         .filter(file => fs.statSync(path.join(modulesPath, file)).isDirectory())
-        .map(module => `Modules/${module}/Resources/assets/js/app.tsx`)
+        .map(module => `Modules/${module}/Resources/assets/js/app.js`)
         .filter(file => fs.existsSync(path.resolve(__dirname, file)));
 };
 
@@ -20,7 +20,7 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/css/app.css',
-                'resources/js/app.tsx',
+                'resources/js/app.js',
                 // Add specific module entries
                 ...getModuleEntries()
             ],
