@@ -13,8 +13,16 @@
         "noEmit": true,
         "paths": {
             "@/*": ["./resources/js/*"],
+            "@auth/*": ["Modules/Auth/resources/assets/js/*"],
             "ziggy-js": ["./vendor/tightenco/ziggy"]
         }
     },
-    "include": ["resources/js/**/*.ts", "resources/js/**/*.tsx", "resources/js/**/*.d.ts"]
+    "include": [
+        "resources/js/**/*.ts",
+        "resources/js/**/*.tsx",
+        "resources/js/**/*.d.ts",
+        "Modules/**/resources/assets/js/**/*.ts",
+        "Modules/**/resources/assets/js/**/*.tsx",
+        "Modules/**/resources/assets/js/**/*.d.ts"
+    ]
 }

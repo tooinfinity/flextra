@@ -3,7 +3,7 @@
         "baseUrl": ".",
         "paths": {
             "@/*": ["resources/js/*"],
-            "@Modules/*":["./Modules/*/resources/assets/js/"],
+            "@auth/*": ["Modules/Auth/resources/assets/js/*"],
             "ziggy-js": ["./vendor/tightenco/ziggy"]
         }
     },
