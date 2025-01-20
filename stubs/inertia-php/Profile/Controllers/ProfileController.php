@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\{{moduleName}}\Http\Controllers;
 
-use Modules\{{moduleName}}\Http\Request\ProfileUpdateRequest;
+use Modules\{{moduleName}}\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +20,7 @@ final class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
-        return Inertia::render('Profile/Edit', [
+        return Inertia::render('Auth::Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
         ]);
