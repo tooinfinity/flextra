@@ -1,5 +1,5 @@
 import InputError from '@auth/Components/InputError';
-import InputLabel from '@authComponents/InputLabel';
+import InputLabel from '@auth/Components/InputLabel';
 import PrimaryButton from '@auth/Components/PrimaryButton';
 import TextInput from '@auth/Components/TextInput';
 import GuestLayout from '@auth/Layouts/GuestLayout';
