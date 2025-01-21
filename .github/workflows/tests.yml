@@ -37,20 +37,6 @@ jobs:
       - name: Install expect
         run: sudo apt-get install -y expect
 
-      # Improved Composer cache
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: |
-          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache Composer dependencies
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json', '**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
-
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -60,18 +46,7 @@ jobs:
           tools: composer:v2
           coverage: none
 
-      # Cache Laravel installation
-      - name: Cache Laravel
-        id: laravel-cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ./vendor
-            ./composer.lock
-          key: laravel-${{ matrix.laravel }}-${{ hashFiles('**/composer.json') }}
-
       - name: Setup Laravel
-        if: steps.laravel-cache.outputs.cache-hit != 'true'
         run: |
           composer create-project laravel/laravel:^${{ matrix.laravel }} .
           composer require tooinfinity/flextra:@dev --no-interaction --no-update
@@ -86,7 +61,7 @@ jobs:
         run: |
           composer update "tooinfinity/flextra:dev-main" --prefer-dist --no-interaction --no-progress -W
           expect <<EOF
-          spawn php artisan flextra:install ${{ matrix.stack }} ${{ matrix.args }}
+          spawn php artisan flextra:install  ${{ matrix.stack }} ${{ matrix.args }}
           expect "Enter the name of the module:"
           send "Auth\r"
           expect "Do you want to create a module? (Yes/No):"
@@ -94,50 +69,13 @@ jobs:
           expect eof
           EOF
 
-      # Improved NPM cache
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
-
-      # Cache node_modules
-      - name: Cache node_modules
-        uses: actions/cache@v4
-        id: node-modules-cache
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-
-
       - name: Install NPM dependencies
-        if: steps.node-modules-cache.outputs.cache-hit != 'true'
-        run: npm install
-
-      # Cache build output
-      - name: Cache build output
-        uses: actions/cache@v4
-        with:
-          path: |
-            public/build
-            public/hot
-          key: ${{ runner.os }}-build-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-build-
+        run: |
+          npm install
 
       - name: Compile assets
-        run: npm run build
-
-      # Cache PHPUnit/Pest test results
-      - name: Cache test results
-        uses: actions/cache@v4
-        with:
-          path: .phpunit.result.cache
-          key: ${{ runner.os }}-test-results-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-test-results-
+        run: |
+          npm run build
 
       - name: Execute tests
         run: ${{ matrix.args == '--pest' && 'vendor/bin/pest' || 'vendor/bin/phpunit' }}
