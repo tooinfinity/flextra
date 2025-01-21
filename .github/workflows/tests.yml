@@ -37,6 +37,13 @@ jobs:
       - name: Install expect
         run: sudo apt-get install -y expect
 
+      - name: Cache Dependencies PHP
+        id: php-cache
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: dependencies-php-composer-${{ hashFiles('composer.lock') }}
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -45,6 +52,10 @@ jobs:
           ini-values: error_reporting=E_ALL
           tools: composer:v2
           coverage: none
+
+      - name: Install PHP dependencies
+        if: steps.php-cache.outputs.cache-hit != 'true'
+        run: composer install --no-interaction --no-progress --ansi
 
       - name: Setup Laravel
         run: |
@@ -69,7 +80,22 @@ jobs:
           expect eof
           EOF
 
+      - name: Get NPM cache directory
+        id: npm-cache-dir
+        shell: bash
+        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+
+      - name: Cache dependencies
+        id: npm-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install NPM dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: |
           npm install
 
