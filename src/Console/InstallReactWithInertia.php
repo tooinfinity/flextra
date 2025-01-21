@@ -89,7 +89,7 @@ trait InstallReactWithInertia
         $this->installAuthBackendFiles($moduleName);
 
         // Views...
-        copy(__DIR__.'/../../stubs/inertia-vue/resources/views/app.blade.php', resource_path('views/app.blade.php'));
+        copy(__DIR__.'/../../stubs/inertia-react/resources/views/app.blade.php', resource_path('views/app.blade.php'));
 
         @unlink(resource_path('views/welcome.blade.php'));
         @unlink(base_path('Modules/'.$moduleName.'/resources/views/welcome.blade.php'));
