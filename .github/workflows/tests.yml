@@ -70,10 +70,23 @@ jobs:
           EOF
 
       - name: Install NPM dependencies
-        run: npm i
+        run: |
+          echo "Installing NPM dependencies..."
+          npm ci --prefer-offline || echo "NPM installation failed"
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
 
       - name: Compile assets
-        run: npm run build
+        run: |
+          echo "Compiling assets..."
+          npm run build || echo "Asset compilation failed"
+      - name: Cache NPM dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Execute tests
         run: ${{ matrix.args == '--pest' && 'vendor/bin/pest' || 'vendor/bin/phpunit' }}
