@@ -114,7 +114,7 @@ jobs:
 
       - name: Install NPM dependencies
         if: steps.node-modules-cache.outputs.cache-hit != 'true'
-        run: npm ci
+        run: npm install
 
       # Cache build output
       - name: Cache build output
