@@ -1,6 +1,6 @@
 {
     "name": "tooinfinity/flextra",
-    "description": "add integrate of laravel modules for inertia react vue svelte js with breeze",
+    "description": "Minimal Laravel Authentication with Inertia, React, Vue, Svelte, and nWidart Laravel Modules",
     "keywords": [
         "laravel",
         "inertia",
@@ -11,7 +11,6 @@
     ],
     "homepage": "https://github.com/tooinfinity/flextra",
     "license": "MIT",
-    "type": "library",
     "authors": [
         {
             "name": "TouwfiQ Meghlaoui",
