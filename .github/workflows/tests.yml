@@ -37,6 +37,11 @@ jobs:
       - name: Install expect
         run: sudo apt-get install -y expect
 
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          path: 'flextra'
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -55,7 +60,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ matrix.laravel }}-${{ hashFiles('**/composer.lock') }}
+          key: ${{ runner.os }}-composer-${{ matrix.laravel }}-${{ hashFiles('flextra/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-${{ matrix.laravel }}-
             ${{ runner.os }}-composer-
@@ -68,19 +73,14 @@ jobs:
           path: |
             ./vendor
             ./composer.lock
-          key: laravel-${{ matrix.laravel }}-${{ hashFiles('**/composer.json') }}
+          key: laravel-${{ matrix.laravel }}-${{ hashFiles('flextra/composer.json') }}
 
       - name: Setup Laravel
         if: steps.laravel-cache.outputs.cache-hit != 'true'
         run: |
           composer create-project laravel/laravel:^${{ matrix.laravel }} .
-          composer require tooinfinity/flextra:@dev --no-interaction --no-update
+          
           composer config repositories.flextra '{"type": "path", "url": "flextra"}' --file composer.json
-
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          path: 'flextra'
 
       # Cache npm packages
       - name: Cache NPM packages
