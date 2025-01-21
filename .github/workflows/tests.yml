@@ -71,7 +71,7 @@ jobs:
 
       - name: Install NPM dependencies
         run: |
-          npm ci
+          npm install
 
       - name: Compile assets
         run: |
