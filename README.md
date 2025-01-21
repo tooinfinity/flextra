@@ -2,9 +2,6 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/tooinfinity/flextra.svg?style=flat-square)](https://packagist.org/packages/tooinfinity/flextra)  [![Total Downloads](https://img.shields.io/packagist/dt/tooinfinity/flextra.svg?style=flat-square)](https://packagist.org/packages/tooinfinity/flextra)  ![GitHub Actions](https://github.com/tooinfinity/flextra/actions/workflows/tests.yml/badge.svg)
 
-> [!WARNING]  
-> **Work in Progress:** Flextra is currently under development and not fully functional. Please refrain from installing it until further updates.
-
 **Flextra** is a versatile Laravel package designed to simplify authentication scaffolding. It seamlessly integrates **InertiaJS** (React, Vue, Svelte), **nWidart Laravel Modules**, and **Tailwind CSS**, enabling you to build modular, scalable, and modern web applications effortlessly.
 
 The name **Flextra** combines "Flex" (flexibility) and "Extra" (enhanced features), embodying the package's mission to deliver flexible and robust solutions for Laravel development.
