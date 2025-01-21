@@ -29,6 +29,7 @@ composer require tooinfinity/flextra:dev-main
 ```
 ## Usage
 Supported stacks: **react**, **vue**
+
 Options: **--typescript**, **--ssr**, **--pest**
 
 ```php
