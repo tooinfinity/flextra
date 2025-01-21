@@ -22,7 +22,7 @@ The name **Flextra** combines "Flex" (flexibility) and "Extra" (enhanced feature
 Install the package using Composer : 
 
 ```bash
-composer require tooinfinity/flextra:dev-main
+composer require tooinfinity/flextra
 ```
 ## Usage
 Supported stacks: **react**, **vue**
