@@ -71,29 +71,21 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            ./vendor
-            ./composer.lock
+            ./laravel/vendor
+            ./laravel/composer.lock
           key: laravel-${{ matrix.laravel }}-${{ hashFiles('flextra/composer.json') }}
 
       - name: Setup Laravel
         if: steps.laravel-cache.outputs.cache-hit != 'true'
         run: |
-          composer create-project laravel/laravel:^${{ matrix.laravel }} .
-          
-          composer config repositories.flextra '{"type": "path", "url": "flextra"}' --file composer.json
-
-      # Cache npm packages
-      - name: Cache NPM packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          composer create-project laravel/laravel:^${{ matrix.laravel }} laravel
+          cd laravel
+          composer config repositories.flextra '{"type": "path", "url": "../flextra"}' --file composer.json
 
       - name: Install Flextra
+        working-directory: ./laravel
         run: |
-          composer update "tooinfinity/flextra:dev-main" --prefer-dist --no-interaction --no-progress -W
+          composer require tooinfinity/flextra:@dev --no-interaction
           expect <<EOF
           spawn php artisan flextra:install ${{ matrix.stack }} ${{ matrix.args }}
           expect "Enter the name of the module:"
@@ -107,25 +99,28 @@ jobs:
       - name: Cache node_modules
         uses: actions/cache@v3
         with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ matrix.stack }}-${{ hashFiles('**/package-lock.json') }}
+          path: laravel/node_modules
+          key: ${{ runner.os }}-node-modules-${{ matrix.stack }}-${{ hashFiles('laravel/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-modules-${{ matrix.stack }}-
 
       - name: Install NPM dependencies
+        working-directory: ./laravel
         run: npm install
 
       # Cache built assets
       - name: Cache built assets
         uses: actions/cache@v3
         with:
-          path: public/build
-          key: ${{ runner.os }}-built-assets-${{ matrix.stack }}-${{ hashFiles('resources/**') }}
+          path: laravel/public/build
+          key: ${{ runner.os }}-built-assets-${{ matrix.stack }}-${{ hashFiles('laravel/resources/**') }}
 
       - name: Compile assets
+        working-directory: ./laravel
         run: npm run build
 
       - name: Execute tests
+        working-directory: ./laravel
         run: ${{ matrix.args == '--pest' && 'vendor/bin/pest' || 'vendor/bin/phpunit' }}
         env:
           DB_CONNECTION: sqlite
