@@ -108,7 +108,7 @@ trait InstallVueWithInertia
         } else {
             (new Filesystem)->delete(base_path('Modules/'.$moduleName.'/resources/assets/js/app.js'));
             copy(__DIR__.'/../../stubs/inertia-module/vue/app.js', base_path('Modules/'.$moduleName.'/resources/assets/js/app.js'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/s/Components'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue/resources/js/Components', base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue/resources/js/Layouts', base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-vue/resources/js/Pages', base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
         }
