@@ -13,7 +13,6 @@
         "noEmit": true,
         "paths": {
             "@/*": ["./resources/js/*"],
-            "@types/*": ["./Modules/Auth/resources/assets/js/types*"],
             "@auth/*": ["./Modules/Auth/resources/assets/js/*"],
             "ziggy-js": ["./vendor/tightenco/ziggy"]
         }
