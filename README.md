@@ -1,8 +1,6 @@
 # Flextra: Minimal Laravel Authentication with Inertia, React, Vue, Svelte, and nWidart Laravel Modules
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/tooinfinity/flextra.svg?style=flat-square)](https://packagist.org/packages/tooinfinity/flextra)  
-[![Total Downloads](https://img.shields.io/packagist/dt/tooinfinity/flextra.svg?style=flat-square)](https://packagist.org/packages/tooinfinity/flextra)  
-![GitHub Actions](https://github.com/tooinfinity/flextra/actions/workflows/tests.yml/badge.svg)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/tooinfinity/flextra.svg?style=flat-square)](https://packagist.org/packages/tooinfinity/flextra)  [![Total Downloads](https://img.shields.io/packagist/dt/tooinfinity/flextra.svg?style=flat-square)](https://packagist.org/packages/tooinfinity/flextra)  ![GitHub Actions](https://github.com/tooinfinity/flextra/actions/workflows/tests.yml/badge.svg)
 
 > [!WARNING]  
 > **Work in Progress:** Flextra is currently under development and not fully functional. Please refrain from installing it until further updates.
