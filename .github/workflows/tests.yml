@@ -53,10 +53,6 @@ jobs:
           tools: composer:v2
           coverage: none
 
-      - name: Install PHP dependencies
-        if: steps.php-cache.outputs.cache-hit != 'true'
-        run: composer install --no-interaction --no-progress --ansi
-
       - name: Setup Laravel
         run: |
           composer create-project laravel/laravel:^${{ matrix.laravel }} .
