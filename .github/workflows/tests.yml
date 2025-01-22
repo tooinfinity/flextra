@@ -1,13 +1,6 @@
 name: tests
 
-on:
-  push:
-    branches:
-      - main
-      - '*.x'
-  pull_request:
-  schedule:
-    - cron: '0 0 * * *'
+on: ['push', 'pull_request']
 
 jobs:
   stub-tests:
