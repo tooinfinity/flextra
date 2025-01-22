@@ -52,7 +52,7 @@ jobs:
 
       - name: Install Flextra
         run: |
-          composer update "tooinfinity/flextra:dev-main" --prefer-dist --no-interaction --no-progress -W
+          composer update "tooinfinity/flextra:@dev" --prefer-dist --no-interaction --no-progress -W
           expect <<EOF
           spawn php artisan flextra:install  ${{ matrix.stack }} ${{ matrix.args }}
           expect "Enter the name of the module:"
