@@ -1,6 +1,4 @@
 <script>
-   
-
     let {
         message,
         ...attrs

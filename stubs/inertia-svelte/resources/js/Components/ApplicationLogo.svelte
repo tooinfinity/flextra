@@ -1,5 +1,4 @@
 <script>
-
     let attrs = $props()
 </script>
 

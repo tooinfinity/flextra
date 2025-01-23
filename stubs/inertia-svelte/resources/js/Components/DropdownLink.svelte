@@ -1,7 +1,5 @@
 <script>
-   
     import { Link } from '@inertiajs/svelte'
-
     let {
         children,
         href,

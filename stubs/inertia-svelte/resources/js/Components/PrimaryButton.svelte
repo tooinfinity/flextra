@@ -1,6 +1,4 @@
 <script>
-    import type { HTMLButtonAttributes } from 'svelte/elements'
-
     let {
         children,
         class: className,
