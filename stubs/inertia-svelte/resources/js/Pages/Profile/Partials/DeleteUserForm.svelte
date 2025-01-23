@@ -68,7 +68,7 @@
                     type="password"
                     class="mt-1 block w-3/4"
                     placeholder="Password"
-                    onkeyup={(e: KeyboardEvent) => e.key === 'Enter' && deleteUser()}
+                    onkeyup={(e) => e.key === 'Enter' && deleteUser()}
                 />
 
                 <InputError message={$form.errors.password} class="mt-2" />
