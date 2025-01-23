@@ -1,6 +1,5 @@
 <script>
     import { inertia, page } from '@inertiajs/svelte'
-    import { route } from 'momentum-trail'
     import ApplicationLogo from '@auth/Components/ApplicationLogo.svelte'
     import Dropdown from '@auth/Components/Dropdown.svelte'
     import DropdownLink from '@auth/Components/DropdownLink.svelte'
