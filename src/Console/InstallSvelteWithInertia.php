@@ -37,9 +37,9 @@ trait InstallSvelteWithInertia
             'postcss' => '^8.5.1',
             'tailwindcss' => '^3.4.17',
             'svelte' => '^5.0.0',
-            'svelte-check' => '^18.2.0',
+            'svelte-check' => '^4.1.4',
             'svelte-portal' => '^2.2.1',
-            'svelte-preprocess' => '^5.1.3',
+            'svelte-preprocess' => '^6.0.3',
             'svelte-transition' => '^0.0.17',
             'momentum-trail' => '^0.4.0',
         ] + $packages);
