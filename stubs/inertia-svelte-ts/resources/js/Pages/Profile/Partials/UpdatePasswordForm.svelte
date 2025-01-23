@@ -5,7 +5,6 @@
     import PrimaryButton from '@auth/Components/PrimaryButton.svelte'
     import TextInput from '@auth/Components/TextInput.svelte'
     import Transition from 'svelte-transition'
-    import { route } from 'momentum-trail'
 
     let passwordInput: TextInput
     let currentPasswordInput: TextInput

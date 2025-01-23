@@ -5,7 +5,6 @@
     import PrimaryButton from '@auth/Components/PrimaryButton.svelte'
     import TextInput from '@auth/Components/TextInput.svelte'
     import { inertia, useForm } from '@inertiajs/svelte'
-    import { route } from 'momentum-trail'
 
     const form = useForm({
         name: '',

@@ -5,7 +5,6 @@
     import PrimaryButton from '@auth/Components/PrimaryButton.svelte'
     import TextInput from '@auth/Components/TextInput.svelte'
     import { inertia, useForm } from '@inertiajs/svelte'
-    import { route } from 'momentum-trail'
 
     const form = useForm({
         name: '',
@@ -93,7 +92,7 @@
         <div class="mt-4 flex items-center justify-end">
             <a
                 use:inertia
-                href={route('login')}
+                href="/login"
                 class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
             >
                 Already registered?

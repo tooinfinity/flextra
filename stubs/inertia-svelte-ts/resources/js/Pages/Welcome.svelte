@@ -1,6 +1,5 @@
 <script lang="ts">
     import { inertia, page } from '@inertiajs/svelte'
-    import { route } from 'momentum-trail'
 
     interface PageProps {
         canLogin?: boolean

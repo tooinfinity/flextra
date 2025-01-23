@@ -6,7 +6,6 @@
     import Modal from '@auth/Components/Modal.svelte'
     import SecondaryButton from '@auth/Components/SecondaryButton.svelte'
     import TextInput from '@auth/Components/TextInput.svelte'
-    import { route } from 'momentum-trail'
 
     let confirmingUserDeletion = $state(false)
     let passwordInput: TextInput

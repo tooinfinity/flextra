@@ -1,6 +1,5 @@
 <script>
     import { inertia, page } from '@inertiajs/svelte'
-    import { route } from 'momentum-trail'
 
     let { canLogin, canRegister, laravelVersion, phpVersion } = $props()
 
