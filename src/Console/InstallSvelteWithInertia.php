@@ -21,6 +21,7 @@ trait InstallSvelteWithInertia
         // Install Inertia and Laravel Modules
         if (! $this->requireComposerPackages([
             'inertiajs/inertia-laravel:^2.0',
+            'based/momentum-trail:^0.3.0',
             'tightenco/ziggy:^2.0',
             'laravel/sanctum:^4.0',
         ])) {
@@ -29,8 +30,6 @@ trait InstallSvelteWithInertia
 
         // install or update NPM packages
         $this->updateNodePackages(fn ($packages) => [
-            '@sveltejs/adapter-auto' => '^4.0.0',
-            '@sveltejs/kit' => '^4.0.0',
             '@sveltejs/vite-plugin-svelte' => '^5.0.3',
             '@inertiajs/svelte' => '^2.0.3',
             '@tailwindcss/forms' => '^0.5.3',
@@ -152,6 +151,7 @@ trait InstallSvelteWithInertia
         copy(__DIR__.'/../../stubs/inertia-common/resources/css/app.css', resource_path('css/app.css'));
         copy(__DIR__.'/../../stubs/inertia-common/postcss.config.js', base_path('postcss.config.js'));
         copy(__DIR__.'/../../stubs/inertia-common/tailwind.config.js', base_path('tailwind.config.js'));
+        copy(__DIR__.'/../../stubs/inertia-svelte/svelte.config.js', base_path('svelte.config.js'));
         copy(__DIR__.'/../../stubs/inertia-svelte/vite.config.js', base_path('vite.config.js'));
 
         if ($this->option('typescript')) {
