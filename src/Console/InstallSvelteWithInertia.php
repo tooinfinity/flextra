@@ -42,6 +42,7 @@ trait InstallSvelteWithInertia
             'svelte-preprocess' => '^6.0.3',
             'svelte-transition' => '^0.0.17',
             'momentum-trail' => '^0.4.0',
+            'vite-plugin-run' => '^0.6.1',
         ] + $packages);
         // install or update NPM packages for typescript
         if ($this->option('typescript')) {
