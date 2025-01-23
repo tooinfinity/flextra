@@ -167,7 +167,7 @@ trait InstallSvelteWithInertia
                 rename(resource_path('js/bootstrap.js'), resource_path('js/bootstrap.ts'));
             }
 
-            $this->replaceInFile('"vite build', '"vue-tsc && vite build', base_path('package.json'));
+            $this->replaceInFile('"vite build', '"vite build', base_path('package.json'));
             $this->replaceInFile('.js', '.ts', base_path('vite.config.js'));
             $this->replaceInFile('.js', '.ts', resource_path('views/app.blade.php'));
         } else {
