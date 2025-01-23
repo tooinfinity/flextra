@@ -203,7 +203,6 @@ trait InstallSvelteWithInertia
      */
     protected function installModuleInertiaSvelteSsr($moduleName): void
     {
-
         if ($this->option('typescript')) {
             copy(__DIR__.'/../../stubs/inertia-svelte-ts/resources/js/ssr.ts', resource_path('js/ssr.ts'));
             $this->replaceInFile("input: 'resources/js/app.ts',", "input: 'resources/js/app.ts',".PHP_EOL."            ssr: 'resources/js/ssr.ts',", base_path('vite.config.js'));
