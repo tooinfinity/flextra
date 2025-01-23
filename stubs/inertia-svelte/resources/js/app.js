@@ -3,11 +3,7 @@ import './bootstrap'
 
 import { createInertiaApp } from '@inertiajs/svelte'
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
-import { defineRoutes } from 'momentum-trail'
 import { hydrate, mount } from 'svelte'
-import routes from './routes.json'
-
-defineRoutes(routes)
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({

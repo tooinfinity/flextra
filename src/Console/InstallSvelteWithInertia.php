@@ -21,7 +21,6 @@ trait InstallSvelteWithInertia
         // Install Inertia and Laravel Modules
         if (! $this->requireComposerPackages([
             'inertiajs/inertia-laravel:^2.0',
-            'based/momentum-trail:^0.3.0',
             'tightenco/ziggy:^2.0',
             'laravel/sanctum:^4.0',
         ])) {
@@ -41,8 +40,6 @@ trait InstallSvelteWithInertia
             'svelte-portal' => '^2.2.1',
             'svelte-preprocess' => '^6.0.3',
             'svelte-transition' => '^0.0.17',
-            'momentum-trail' => '^0.4.0',
-            'vite-plugin-run' => '^0.6.1',
         ] + $packages);
         // install or update NPM packages for typescript
         if ($this->option('typescript')) {
