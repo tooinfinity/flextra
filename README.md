@@ -25,12 +25,24 @@ Install the package using Composer :
 composer require tooinfinity/flextra
 ```
 ## Usage
-Supported stacks: **react**, **vue**
+Supported stacks: **react**, **vue**, **svelte**
 
 Options: **--typescript**, **--ssr**, **--pest**
 
 ```php
 php artisan flextra:install [stack] --options
+```
+### Example
+
+React Stack
+
+```php
+php artisan flextra:install react
+```
+Vue Stack with options
+
+```php
+php artisan flextra:install vue --typescript --ssr --pest
 ```
 
 ### Testing is not implement yet
