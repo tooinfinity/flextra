@@ -100,5 +100,7 @@ trait InstallModuleBlade
 
         $this->line('');
         $this->components->info('Flextra Blade for '.$moduleName.' Module scaffolding installed successfully.');
+
+        return 0;
     }
 }
