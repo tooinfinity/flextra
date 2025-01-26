@@ -36,7 +36,7 @@ trait InstallModuleBlade
         // Controllers...
         $this->copyModuleFilesWithNamespace(
             $moduleName,
-            __DIR__.'/../../stubs/blade-module/app/Http/Controller',
+            __DIR__.'/../../stubs/blade-module/app/Http/Controllers',
             base_path('Modules/'.$moduleName.'/app/Http/Controllers')
         );
 
