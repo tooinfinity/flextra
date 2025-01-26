@@ -49,7 +49,7 @@ jobs:
       - name: Install Flextra
         run: |
           composer update "tooinfinity/flextra:@dev" --prefer-dist --no-interaction --no-progress -W
-          spawn php artisan flextra:install  ${{ matrix.stack }} ${{ matrix.args }}
+          php artisan flextra:install  ${{ matrix.stack }} ${{ matrix.args }}
 
       - name: Install NPM dependencies
         run: |
