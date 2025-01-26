@@ -70,7 +70,6 @@ trait InstallModuleBlade
         }
 
         // Routes...
-        // Routes...
         $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/blade-module/routes/web.php', base_path('Modules/'.$moduleName.'/routes/web.php'));
         $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/blade-module/routes/auth.php', base_path('Modules/'.$moduleName.'/routes/auth.php'));
 
