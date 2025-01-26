@@ -53,7 +53,7 @@ trait InstallModuleBlade
 
         if (! $this->option('dark')) {
             $this->removeDarkClasses((new Finder)
-                ->in(base_path('Modules'.$moduleName.'/resources/views'))
+                ->in(base_path('Modules/'.$moduleName.'/resources/views'))
                 ->name('*.blade.php')
                 ->notPath('livewire/welcome/navigation.blade.php')
                 ->notName('welcome.blade.php')
@@ -61,8 +61,8 @@ trait InstallModuleBlade
         }
 
         // Components...
-        (new Filesystem)->ensureDirectoryExists(app_path('Modules'.$moduleName.'/app/View/Components'));
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/blade-module/app/View/Components', base_path('Modules'.$moduleName.'/app/View/Components'));
+        (new Filesystem)->ensureDirectoryExists(app_path('Modules/'.$moduleName.'/app/View/Components'));
+        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/blade-module/app/View/Components', base_path('Modules/'.$moduleName.'/app/View/Components'));
 
         // Tests...
         if (! $this->installTests()) {
