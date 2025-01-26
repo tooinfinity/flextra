@@ -11,6 +11,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Laravel\Breeze\Console\InstallsModuleBlade;
 use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,7 +25,7 @@ use function Laravel\Prompts\select;
 #[AsCommand(name: 'flextra:install')] // Flextra: Inspired by "Flexibility" and "Extra", perfect for multi-framework tools.
 final class InstallCommand extends Command implements PromptsForMissingInput
 {
-    use InstallReactWithInertia, InstallSvelteWithInertia, InstallVueWithInertia;
+    use InstallReactWithInertia, InstallsModuleBlade, InstallSvelteWithInertia, InstallVueWithInertia;
 
     /**
      * The console command signature and name.
@@ -44,7 +45,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
      *
      * @var string
      */
-    protected $description = 'Install the flextra with the Inertia stack and laravel Modules';
+    protected $description = 'Install the flextra with the Inertia stack,Blade with laravel Modules';
 
     /**
      * The name of the module.
@@ -66,8 +67,11 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         if ($this->argument('stack') === 'svelte') {
             return $this->installModuleInertiaSvelte($this->moduleName);
         }
+        if ($this->argument('stack') === 'blade') {
+            return $this->installBladeModule($this->moduleName);
+        }
 
-        $this->components->error('Invalid stack. Supported stacks are [react], [vue], and [svelte].');
+        $this->components->error('Invalid stack. Supported stacks are [react], [vue], [svelte]  and [blade].');
 
         return 1;
     }
@@ -133,8 +137,9 @@ final class InstallCommand extends Command implements PromptsForMissingInput
                     'react' => 'Inertia React with Laravel Modules',
                     'vue' => 'Inertia Vue with Laravel Modules',
                     'svelte' => 'Inertia Svelte with Laravel Modules',
+                    'blade' => 'Blade with Laravel Modules',
                 ],
-                scroll: 3,
+                scroll: 6,
             ),
         ];
     }
@@ -146,7 +151,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     {
         $stack = $input->getArgument('stack');
 
-        if (in_array($stack, ['react', 'vue', 'svelte'])) {
+        if (in_array($stack, ['react', 'vue', 'svelte', 'blade'])) {
             collect(multiselect(
                 label: 'Would you like any optional features?',
                 options: [
@@ -175,6 +180,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
 
         $stubStack = match ($this->argument('stack')) {
             'api' => 'api',
+            'blade' => 'blade-module',
             default => 'inertia-php',
         };
 
@@ -468,9 +474,9 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         }
         // Prompt the user to either make the Auth module but, I prefer auth
         // because it's a must-have module for breeze to live
-        $moduleNameInput = $this->ask('Enter the name of the module');
-        $this->moduleName = $moduleNameInput ?? $this->moduleName;
-        $this->runCommands(["php artisan module:make {$this->moduleName}"]);
+        /* $moduleNameInput = $this->ask('Enter the name of the module');
+         $this->moduleName = $moduleNameInput ?? $this->moduleName;
+         $this->runCommands(["php artisan module:make {$this->moduleName}"]);*/
     }
 
     /**
