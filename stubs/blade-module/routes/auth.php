@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_type
+declare(strict_types=1);
 
 use Modules\{{moduleName}}\Http\Controllers\AuthenticatedSessionController;
 use Modules\{{moduleName}}\Http\Controllers\ConfirmablePasswordController;
