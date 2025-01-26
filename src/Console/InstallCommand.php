@@ -11,7 +11,6 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Laravel\Breeze\Console\InstallsModuleBlade;
 use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,7 +24,7 @@ use function Laravel\Prompts\select;
 #[AsCommand(name: 'flextra:install')] // Flextra: Inspired by "Flexibility" and "Extra", perfect for multi-framework tools.
 final class InstallCommand extends Command implements PromptsForMissingInput
 {
-    use InstallReactWithInertia, InstallsModuleBlade, InstallSvelteWithInertia, InstallVueWithInertia;
+    use InstallModuleBlade, InstallReactWithInertia, InstallSvelteWithInertia, InstallVueWithInertia;
 
     /**
      * The console command signature and name.

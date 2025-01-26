@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Laravel\Breeze\Console;
+namespace TooInfinity\Flextra\Console;
 
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
-trait InstallsModuleBlade
+trait InstallModuleBlade
 {
     /**
      * Install the Blade Breeze stack.
@@ -35,14 +35,14 @@ trait InstallsModuleBlade
 
         // Controllers...
         $this->copyModuleFilesWithNamespace(
-            $this->moduleName,
+            $moduleName,
             __DIR__.'/../../stubs/blade-module/app/Http/Controller',
             base_path('Modules/'.$moduleName.'/app/Http/Controllers')
         );
 
         // Requests...
         $this->copyModuleFilesWithNamespace(
-            $this->moduleName,
+            $moduleName,
             __DIR__.'/../../stubs/blade-module/app/Http/Requests',
             base_path('Modules/'.$moduleName.'/app/Http/Requests')
         );
