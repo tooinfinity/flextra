@@ -70,8 +70,9 @@ trait InstallModuleBlade
         }
 
         // Routes...
-        copy(__DIR__.'/../../stubs/blade-module/routes/web.php', base_path('Modules/'.$moduleName.'/routes/web.php'));
-        copy(__DIR__.'/../../stubs/blade-module/routes/auth.php', base_path('Modules/'.$moduleName.'/routes/auth.php'));
+        // Routes...
+        $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/blade-module/routes/web.php', base_path('Modules/'.$moduleName.'/routes/web.php'));
+        $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/blade-module/routes/auth.php', base_path('Modules/'.$moduleName.'/routes/auth.php'));
 
         // "Dashboard" Route...
         $this->replaceInFile('/home', '/dashboard', base_path('Modules/'.$moduleName.'/resources/views/welcome.blade.php'));

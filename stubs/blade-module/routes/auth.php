@@ -1,14 +1,14 @@
 <?php
 
-use Modules\Auth\Http\Controllers\Auth\AuthenticatedSessionController;
-use Modules\Auth\Http\Controllers\Auth\ConfirmablePasswordController;
-use Modules\Auth\Http\Controllers\Auth\EmailVerificationNotificationController;
-use Modules\Auth\Http\Controllers\Auth\EmailVerificationPromptController;
-use Modules\Auth\Http\Controllers\Auth\NewPasswordController;
-use Modules\Auth\Http\Controllers\Auth\PasswordController;
-use Modules\Auth\Http\Controllers\Auth\PasswordResetLinkController;
-use Modules\Auth\Http\Controllers\Auth\RegisteredUserController;
-use Modules\Auth\Http\Controllers\Auth\VerifyEmailController;
+use Modules\{{moduleName}}\Http\Controllers\Auth\AuthenticatedSessionController;
+use Modules\{{moduleName}}\Http\Controllers\Auth\ConfirmablePasswordController;
+use Modules\{{moduleName}}\Http\Controllers\Auth\EmailVerificationNotificationController;
+use Modules\{{moduleName}}\Http\Controllers\Auth\EmailVerificationPromptController;
+use Modules\{{moduleName}}\Http\Controllers\Auth\NewPasswordController;
+use Modules\{{moduleName}}\Http\Controllers\Auth\PasswordController;
+use Modules\{{moduleName}}\Http\Controllers\Auth\PasswordResetLinkController;
+use Modules\{{moduleName}}\Http\Controllers\Auth\RegisteredUserController;
+use Modules\{{moduleName}}\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
