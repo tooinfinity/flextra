@@ -74,8 +74,8 @@ trait InstallModuleBlade
         $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/blade-module/routes/auth.php', base_path('Modules/'.$moduleName.'/routes/auth.php'));
 
         // "Dashboard" Route...
-        $this->replaceInFile('/home', '/dashboard', base_path('Modules/'.$moduleName.'/resources/views/welcome.blade.php'));
-        $this->replaceInFile('Home', 'Dashboard', base_path('Modules/'.$moduleName.'/resources/views/welcome.blade.php'));
+        $this->replaceInFile('/home', '/dashboard', resource_path('views/welcome.blade.php'));
+        $this->replaceInFile('Home', 'Dashboard', resource_path('views/welcome.blade.php'));
 
         // Tailwind / Vite...
         copy(__DIR__.'/../../stubs/blade-module/tailwind.config.js', base_path('tailwind.config.js'));
