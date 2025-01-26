@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\{{moduleName}}\Http\Controllers\Auth;
+namespace Modules\{{moduleName}}\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\PasswordReset;
@@ -19,7 +19,7 @@ class NewPasswordController extends Controller
      */
     public function create(Request $request): View
     {
-        return view('auth.reset-password', ['request' => $request]);
+        return view('auth::auth.reset-password', ['request' => $request]);
     }
 
     /**

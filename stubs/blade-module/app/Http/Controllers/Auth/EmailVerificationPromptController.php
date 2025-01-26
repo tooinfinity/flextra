@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\{{moduleName}}\Http\Controllers\Auth;
+namespace Modules\{{moduleName}}\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -16,6 +16,6 @@ class EmailVerificationPromptController extends Controller
     {
         return $request->user()->hasVerifiedEmail()
                     ? redirect()->intended(route('dashboard', absolute: false))
-                    : view('auth.verify-email');
+                    : view('auth::auth.verify-email');
     }
 }

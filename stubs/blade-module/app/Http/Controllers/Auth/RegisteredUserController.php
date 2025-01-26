@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\{{moduleName}}\Http\Controllers\Auth;
+namespace Modules\{{moduleName}}\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -19,7 +19,7 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        return view('auth::auth.register');
     }
 
     /**

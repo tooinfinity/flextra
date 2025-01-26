@@ -10,7 +10,7 @@ use Symfony\Component\Finder\Finder;
 trait InstallModuleBlade
 {
     /**
-     * Install the Blade Breeze stack.
+     * Install the Blade flextra stack with Laravel Modules.
      */
     protected function installBladeModule(string $moduleName): ?int
     {
@@ -30,8 +30,9 @@ trait InstallModuleBlade
         // delete unwanted blade files from Modules
         (new Filesystem)->deleteDirectory(base_path('Modules/'.$moduleName.'/resources/views'));
 
-        // delete default app.blade.php
-        // (new Filesystem)->delete(resource_path('views/app.blade.php'));
+        // Providers...
+        (new Filesystem)->ensureDirectoryExists(app_path('Providers'));
+        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/blade-module/app/Providers', app_path('Providers'));
 
         // Controllers...
         $this->copyModuleFilesWithNamespace(
@@ -61,8 +62,11 @@ trait InstallModuleBlade
         }
 
         // Components...
-        (new Filesystem)->ensureDirectoryExists(app_path('Modules/'.$moduleName.'/app/View/Components'));
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/blade-module/app/View/Components', base_path('Modules/'.$moduleName.'/app/View/Components'));
+        $this->copyModuleFilesWithNamespace(
+            $moduleName,
+            __DIR__.'/../../stubs/blade-module/app/View/Components',
+            base_path('Modules/'.$moduleName.'/app/View/Components')
+        );
 
         // Tests...
         if (! $this->installTests()) {
