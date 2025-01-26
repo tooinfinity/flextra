@@ -4,6 +4,7 @@ namespace Modules\{{moduleName}}\Http\Controllers;
 
 use Modules\{{moduleName}}\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
