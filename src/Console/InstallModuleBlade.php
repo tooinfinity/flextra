@@ -84,11 +84,6 @@ trait InstallModuleBlade
         copy(__DIR__.'/../../stubs/blade-module/resources/css/app.css', resource_path('css/app.css'));
         copy(__DIR__.'/../../stubs/blade-module/resources/js/app.js', resource_path('js/app.js'));
 
-        (new Filesystem)->delete(base_path('Modules/'.$moduleName.'/resources/assets/js/app.js'));
-        (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/css'));
-        copy(__DIR__.'/../../stubs/blade-module/js/module.js', base_path('Modules/'.$moduleName.'/resources/assets/js/module.js'));
-        copy(__DIR__.'/../../stubs/blade-module/js/module.css', base_path('Modules/'.$moduleName.'/resources/assets/css/module.css'));
-
         $this->components->info('Installing and building Node dependencies.');
 
         if (file_exists(base_path('pnpm-lock.yaml'))) {
