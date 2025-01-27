@@ -4,8 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\Auth\View\Components\AppLayout;
-use Modules\Auth\View\Components\GuestLayout;
+use Modules\{{moduleName}}\View\Components\AppLayout;
+use Modules\{{moduleName}}\View\Components\GuestLayout;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Blade::component('auth::guest-layout', GuestLayout::class);
-        Blade::component('auth::app-layout', AppLayout::class);
+        Blade::component('{{moduleName | lower}}::guest-layout', GuestLayout::class);
+        Blade::component('{{moduleName | lower}}::app-layout', AppLayout::class);
     }
 }
