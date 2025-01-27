@@ -1,27 +1,27 @@
-<x-auth::guest-layout>
+<x-{{moduleName}}::guest-layout>
     <!-- Session Status -->
-    <x-auth::auth-session-status class="mb-4" :status="session('status')" />
+    <x-{{moduleName}}::auth-session-status class="mb-4" :status="session('status')" />
 
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
         <!-- Email Address -->
         <div>
-            <x-auth::input-label for="email" :value="__('Email')" />
-            <x-auth::text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-auth::input-error :messages="$errors->get('email')" class="mt-2" />
+            <x-{{moduleName}}::input-label for="email" :value="__('Email')" />
+            <x-{{moduleName}}::text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+            <x-{{moduleName}}::input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <!-- Password -->
         <div class="mt-4">
-            <x-auth::input-label for="password" :value="__('Password')" />
+            <x-{{moduleName}}::input-label for="password" :value="__('Password')" />
 
-            <x-auth::text-input id="password" class="block mt-1 w-full"
+            <x-{{moduleName}}::text-input id="password" class="block mt-1 w-full"
                             type="password"
                             name="password"
                             required autocomplete="current-password" />
 
-            <x-auth::input-error :messages="$errors->get('password')" class="mt-2" />
+            <x-{{moduleName}}::input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
         <!-- Remember Me -->
@@ -39,9 +39,9 @@
                 </a>
             @endif
 
-            <x-auth::primary-button class="ms-3">
+            <x-{{moduleName}}::primary-button class="ms-3">
                 {{ __('Log in') }}
-            </x-auth::primary-button>
+            </x-{{moduleName}}::primary-button>
         </div>
     </form>
-</x-auth::guest-layout>
+</x-{{moduleName}}::guest-layout>

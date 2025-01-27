@@ -15,7 +15,7 @@ class PasswordResetLinkController extends Controller
      */
     public function create(): View
     {
-        return view('auth::auth.forgot-password');
+        return view('{{moduleName}}::auth.forgot-password');
     }
 
     /**

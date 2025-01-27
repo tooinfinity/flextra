@@ -12,6 +12,6 @@ class AppLayout extends Component
      */
     public function render(): View
     {
-        return view('auth::layouts.app');
+        return view('{{moduleName}}::layouts.app');
     }
 }

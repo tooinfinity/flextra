@@ -9,12 +9,12 @@
         </p>
     </header>
 
-    <x-auth::danger-button
+    <x-{{moduleName}}::danger-button
         x-data=""
         x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
-    >{{ __('Delete Account') }}</x-auth::danger-button>
+    >{{ __('Delete Account') }}</x-{{moduleName}}::danger-button>
 
-    <x-auth::modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
+    <x-{{moduleName}}::modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
         <form method="post" action="{{ route('profile.destroy') }}" class="p-6">
             @csrf
             @method('delete')
@@ -28,9 +28,9 @@
             </p>
 
             <div class="mt-6">
-                <x-auth::input-label for="password" value="{{ __('Password') }}" class="sr-only" />
+                <x-{{moduleName}}::input-label for="password" value="{{ __('Password') }}" class="sr-only" />
 
-                <x-auth::text-input
+                <x-{{moduleName}}::text-input
                     id="password"
                     name="password"
                     type="password"
@@ -38,18 +38,18 @@
                     placeholder="{{ __('Password') }}"
                 />
 
-                <x-auth::input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
+                <x-{{moduleName}}::input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
             </div>
 
             <div class="mt-6 flex justify-end">
-                <x-auth::secondary-button x-on:click="$dispatch('close')">
+                <x-{{moduleName}}::secondary-button x-on:click="$dispatch('close')">
                     {{ __('Cancel') }}
-                </x-auth::secondary-button>
+                </x-{{moduleName}}::secondary-button>
 
-                <x-auth::danger-button class="ms-3">
+                <x-{{moduleName}}::danger-button class="ms-3">
                     {{ __('Delete Account') }}
-                </x-auth::danger-button>
+                </x-{{moduleName}}::danger-button>
             </div>
         </form>
-    </x-auth::modal>
+    </x-{{moduleName}}::modal>
 </section>

@@ -336,9 +336,9 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     }
 
     /**
-     * Replace a given string within all files in a given directory.
+     * Process all stub files in a given directory, replacing placeholders with the module name.
      */
-    private function replaceInDirectory(string $search, string $replace, string $directory): void
+    private function processStubsInDirectory(string $directory, string $moduleName): void
     {
         $filesystem = new Filesystem;
 
@@ -354,8 +354,8 @@ final class InstallCommand extends Command implements PromptsForMissingInput
             $path = $file->getPathname();
             $contents = file_get_contents($path);
 
-            // Replace the search string with the replace string
-            $newContents = str_replace($search, $replace, $contents);
+            // Replace the moduleName placeholder in the contents
+            $newContents = str_replace('{{moduleName}}', $moduleName, $contents);
 
             // Write the new contents back to the file
             file_put_contents($path, $newContents);
