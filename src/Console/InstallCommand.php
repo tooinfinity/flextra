@@ -336,6 +336,33 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     }
 
     /**
+     * Replace a given string within all files in a given directory.
+     */
+    private function replaceInDirectory(string $search, string $replace, string $directory): void
+    {
+        $filesystem = new Filesystem;
+
+        // Ensure the directory exists
+        if (! $filesystem->exists($directory)) {
+            return;
+        }
+
+        // Get all files in the directory
+        $files = $filesystem->allFiles($directory);
+
+        foreach ($files as $file) {
+            $path = $file->getPathname();
+            $contents = file_get_contents($path);
+
+            // Replace the search string with the replace string
+            $newContents = str_replace($search, $replace, $contents);
+
+            // Write the new contents back to the file
+            file_put_contents($path, $newContents);
+        }
+    }
+
+    /**
      * Run the given stack commands.
      */
     private function runCommands(array $commands): void
