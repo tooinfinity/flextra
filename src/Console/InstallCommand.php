@@ -37,7 +37,8 @@ final class InstallCommand extends Command implements PromptsForMissingInput
                             {--ssr : Indicates if Inertia SSR support should be installed}
                             {--typescript : Indicates if TypeScript is preferred for the Inertia stack}
                             {--eslint : Indicates if ESLint with Prettier should be installed}
-                            {--composer=global : Absolute path to the Composer binary which should be used to install packages}';
+                            {--composer=global : Absolute path to the Composer binary which should be used to install packages}
+                            {--module=Auth : The name of the module to be installed}';
 
     /**
      * The console command description.
@@ -57,6 +58,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
      */
     public function handle(): ?int
     {
+        $this->moduleName = $this->option('module');
         if ($this->argument('stack') === 'vue') {
             return $this->installModuleInertiaVue($this->moduleName);
         }
