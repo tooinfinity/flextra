@@ -31,8 +31,11 @@ trait InstallModuleBlade
         (new Filesystem)->deleteDirectory(base_path('Modules/'.$moduleName.'/resources/views'));
 
         // Providers...
-        (new Filesystem)->ensureDirectoryExists(app_path('Providers'));
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/blade-module/app/Providers', app_path('Providers'));
+        $this->copyModuleFilesWithNamespace(
+            $moduleName,
+            __DIR__.'/../../stubs/blade-module/app/Providers',
+            app_path('Providers')
+        );
 
         // Controllers...
         $this->copyModuleFilesWithNamespace(
