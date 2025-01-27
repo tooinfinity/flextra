@@ -92,7 +92,7 @@ trait InstallModuleBlade
         copy(__DIR__.'/../../stubs/blade-module/resources/js/app.js', resource_path('js/app.js'));
 
         // modify auth on blade file to use the module name
-        if (! $moduleName === 'Auth') {
+        if (! ($moduleName === 'Auth')) {
             $this->replaceInDirectory('auth', $moduleName, app_path('Providers'));
             $this->replaceInDirectory('auth', $moduleName, base_path('Modules/'.$moduleName.'/app/Http/Controllers'));
             $this->replaceInDirectory('auth', $moduleName, base_path('Modules/'.$moduleName.'/app/View/Components'));
