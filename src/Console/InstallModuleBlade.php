@@ -97,6 +97,9 @@ trait InstallModuleBlade
             $this->replaceInDirectory('auth', $moduleName, base_path('Modules/'.$moduleName.'/app/Http/Controllers'));
             $this->replaceInDirectory('auth', $moduleName, base_path('Modules/'.$moduleName.'/app/View/Components'));
             $this->replaceInDirectory('auth', $moduleName, base_path('Modules/'.$moduleName.'/routes'));
+            // rename file to use the module name
+            (new Filesystem)->move(base_path('Modules/'.$moduleName.'/routes/auth.php'), base_path('Modules/'.$moduleName.'/routes/'.$moduleName.'.php'));
+
         }
 
         $this->components->info('Installing and building Node dependencies.');
