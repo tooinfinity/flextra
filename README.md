@@ -1,8 +1,15 @@
-# Flextra: Minimal Laravel Authentication with Inertia, React, Vue, Svelte, and nWidart Laravel Modules
+# Flextra: Minimal Laravel Authentication Breeze support  nWidart Laravel Modules
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/tooinfinity/flextra.svg?style=flat-square)](https://packagist.org/packages/tooinfinity/flextra)  [![Total Downloads](https://img.shields.io/packagist/dt/tooinfinity/flextra.svg?style=flat-square)](https://packagist.org/packages/tooinfinity/flextra)  ![GitHub Actions](https://github.com/tooinfinity/flextra/actions/workflows/tests.yml/badge.svg)
+Laravel Authentication Breeze support with nWidart Laravel Modules with Frontend Frameworks (React, Vue, Svelte, Blade) and Tailwind CSS.
 
-**Flextra** is a versatile Laravel package designed to simplify authentication scaffolding. It seamlessly integrates **InertiaJS** (React, Vue, Svelte), **nWidart Laravel Modules**, and **Tailwind CSS**, enabling you to build modular, scalable, and modern web applications effortlessly.
+## Project that inspired and used to build this package
+- Laravel [Breeze](https://github.com/laravel/breeze)
+- Laravel Modules [nWidart/laravel-modules](https://github.com/nWidart/laravel-modules)
+- [xavi7th/laravel-inertiajs-tailwindcss-starter](https://github.com/xavi7th/laravel-inertia-svelte-starter-template/tree/main)
+
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/tooinfinity/flextra.svg?style=flat-square)](https://packagist.org/packages/tooinfinity/flextra)  [![Total Downloads](https://img.shields.io/packagist/dt/tooinfinity/flextra.svg?style=flat-square)](https://packagist.org/packages/tooinfinity/flextra)  ![GitHub Actions](https://github.com/tooinfinity/flextra/actions/workflows/tests.yml/badge.svg)  [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+
+**Flextra** is a versatile Laravel package designed to simplify authentication scaffolding. It seamlessly integrates **InertiaJS** (React, Vue, Svelte), Blade, **nWidart Laravel Modules**, and **Tailwind CSS**, enabling you to build modular, scalable, and modern web applications effortlessly.
 
 The name **Flextra** combines "Flex" (flexibility) and "Extra" (enhanced features), embodying the package's mission to deliver flexible and robust solutions for Laravel development.
 
@@ -12,6 +19,7 @@ The name **Flextra** combines "Flex" (flexibility) and "Extra" (enhanced feature
 
 - **Authentication Scaffolding:** Provides a lightweight and modular authentication system for Laravel projects.
 - **InertiaJS Integration:** Supports frontends built with React, Vue, and Svelte via InertiaJS.
+- **Blade Support:** Offers traditional Blade views for projects that do not require frontend frameworks.
 - **nWidart Laravel Modules:** Leverages modular architecture to enable scalable and maintainable applications.
 - **Tailwind CSS:** Styled with modern and responsive design principles using Tailwind.
 
@@ -25,7 +33,7 @@ Install the package using Composer :
 composer require tooinfinity/flextra
 ```
 ## Usage
-Supported stacks: **react**, **vue**, **svelte**
+Supported stacks: **react**, **vue**, **svelte**, **blade**
 
 Options: **--typescript**, **--ssr**, **--pest**
 
@@ -62,6 +70,9 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 ## Credits
 
 -   [TouwfiQ Meghlaoui](https://github.com/tooinfinity)
+-   [Nicolas Widart](https://github.com/nWidart)
+-   [Taylor Otwell](https://github.com/taylorotwell)
+-   [Akhile E. Daniel](https://github.com/xavi7th)
 -   [All Contributors](../../contributors)
 
 ## License
