@@ -19,7 +19,7 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('{{moduleName | lower}}::auth.register');
+        return view('auth::auth.register');
     }
 
     /**
