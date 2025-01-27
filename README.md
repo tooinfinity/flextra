@@ -1,6 +1,13 @@
-# Flextra: Minimal Laravel Authentication with Inertia, React, Vue, Svelte, and nWidart Laravel Modules
+# Flextra: Minimal Laravel Authentication Breeze support  nWidart Laravel Modules
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/tooinfinity/flextra.svg?style=flat-square)](https://packagist.org/packages/tooinfinity/flextra)  [![Total Downloads](https://img.shields.io/packagist/dt/tooinfinity/flextra.svg?style=flat-square)](https://packagist.org/packages/tooinfinity/flextra)  ![GitHub Actions](https://github.com/tooinfinity/flextra/actions/workflows/tests.yml/badge.svg)
+Laravel Authentication Breeze support with nWidart Laravel Modules with Frontend Frameworks (React, Vue, Svelte, Blade) and Tailwind CSS.
+
+## Project that inspired and used to build this package
+- Laravel [Breeze](https://github.com/laravel/breeze)
+- Laravel Modules [nWidart/laravel-modules](https://github.com/nWidart/laravel-modules)
+- [xavi7th/laravel-inertiajs-tailwindcss-starter](https://github.com/xavi7th/laravel-inertia-svelte-starter-template/tree/main)
+
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/tooinfinity/flextra.svg?style=flat-square)](https://packagist.org/packages/tooinfinity/flextra)  [![Total Downloads](https://img.shields.io/packagist/dt/tooinfinity/flextra.svg?style=flat-square)](https://packagist.org/packages/tooinfinity/flextra)  ![GitHub Actions](https://github.com/tooinfinity/flextra/actions/workflows/tests.yml/badge.svg)  [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
 **Flextra** is a versatile Laravel package designed to simplify authentication scaffolding. It seamlessly integrates **InertiaJS** (React, Vue, Svelte), **nWidart Laravel Modules**, and **Tailwind CSS**, enabling you to build modular, scalable, and modern web applications effortlessly.
 
@@ -25,7 +32,7 @@ Install the package using Composer :
 composer require tooinfinity/flextra
 ```
 ## Usage
-Supported stacks: **react**, **vue**, **svelte**
+Supported stacks: **react**, **vue**, **svelte**, **blade**
 
 Options: **--typescript**, **--ssr**, **--pest**
 
