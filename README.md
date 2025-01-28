@@ -33,6 +33,14 @@ Install the package using Composer :
 composer require tooinfinity/flextra
 ```
 ## Usage
+
+this Package is installed and setup laravel modules and breeze authentication with stack you prefer and Tailwind CSS automatically.
+by default the name of the module is `Auth` but you can change it by passing the name of the module as an options like this.
+    
+```php
+php artisan flextra:install [stack] --module=Authentications [--other-options]
+```
+
 Supported stacks: **react**, **vue**, **svelte**, **blade**
 
 Options: **--typescript**, **--ssr**, **--pest**
@@ -51,6 +59,10 @@ Vue Stack with options
 
 ```php
 php artisan flextra:install vue --typescript --ssr --pest
+```
+
+```php
+php artisan flextra:install vue --module=Authentications  --typescript --ssr --pest
 ```
 
 ### Testing is not implement yet

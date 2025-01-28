@@ -31,8 +31,11 @@ trait InstallModuleBlade
         (new Filesystem)->deleteDirectory(base_path('Modules/'.$moduleName.'/resources/views'));
 
         // Providers...
-        (new Filesystem)->ensureDirectoryExists(app_path('Providers'));
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/blade-module/app/Providers', app_path('Providers'));
+        $this->copyModuleFilesWithNamespace(
+            $moduleName,
+            __DIR__.'/../../stubs/blade-module/app/Providers',
+            app_path('Providers')
+        );
 
         // Controllers...
         $this->copyModuleFilesWithNamespace(
@@ -49,8 +52,33 @@ trait InstallModuleBlade
         );
 
         // Views...
-        (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/views'));
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/blade-module/resources/views', base_path('Modules/'.$moduleName.'/resources/views'));
+        (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/views/components'));
+        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/blade-module/resources/views/components', base_path('Modules/'.$moduleName.'/resources/views/components'));
+        $this->copyModuleFilesWithNamespace(
+            $moduleName,
+            __DIR__.'/../../stubs/blade-module/resources/views/auth',
+            base_path('Modules/'.$moduleName.'/resources/views/auth')
+        );
+        $this->copyModuleFilesWithNamespace(
+            $moduleName,
+            __DIR__.'/../../stubs/blade-module/resources/views/layouts',
+            base_path('Modules/'.$moduleName.'/resources/views/layouts')
+        );
+        $this->copyModuleFilesWithNamespace(
+            $moduleName,
+            __DIR__.'/../../stubs/blade-module/resources/views/profile/partials',
+            base_path('Modules/'.$moduleName.'/resources/views/profile/partials')
+        );
+        $this->copyFileWithNamespace(
+            $moduleName,
+            __DIR__.'/../../stubs/blade-module/resources/views/dashboard.blade.php',
+            base_path('Modules/'.$moduleName.'/resources/views/dashboard.blade.php')
+        );
+        $this->copyFileWithNamespace(
+            $moduleName,
+            __DIR__.'/../../stubs/blade-module/resources/views/profile/edit.blade.php',
+            base_path('Modules/'.$moduleName.'/resources/views/profile/edit.blade.php')
+        );
 
         if (! $this->option('dark')) {
             $this->removeDarkClasses((new Finder)

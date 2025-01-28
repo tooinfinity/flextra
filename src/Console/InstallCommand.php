@@ -37,7 +37,8 @@ final class InstallCommand extends Command implements PromptsForMissingInput
                             {--ssr : Indicates if Inertia SSR support should be installed}
                             {--typescript : Indicates if TypeScript is preferred for the Inertia stack}
                             {--eslint : Indicates if ESLint with Prettier should be installed}
-                            {--composer=global : Absolute path to the Composer binary which should be used to install packages}';
+                            {--composer=global : Absolute path to the Composer binary which should be used to install packages}
+                            {--module=Auth : The name of the module to be installed}';
 
     /**
      * The console command description.
@@ -57,6 +58,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
      */
     public function handle(): ?int
     {
+        $this->moduleName = $this->option('module');
         if ($this->argument('stack') === 'vue') {
             return $this->installModuleInertiaVue($this->moduleName);
         }
@@ -203,24 +205,17 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     }
 
     /**
-     * Copy Stubs with modified namespace
+     * Copy Folder Stubs with modified namespace
      */
     private function copyModuleFilesWithNamespace(string $moduleName, string $stubPath, string $targetPath): void
     {
         $filesystem = new Filesystem;
-
-        // check if the target path exists
         $filesystem->ensureDirectoryExists($targetPath);
-        // Get all files from the stub directory
         $files = (new Filesystem)->allFiles($stubPath);
-
         foreach ($files as $file) {
             $contents = file_get_contents($file->getPathname());
-
-            // Replace the moduleName placeholder in the contents
             $contents = str_replace('{{moduleName}}', $moduleName, $contents);
-
-            // Create the target file with replaced contents
+            $contents = str_replace('{{moduleNameLower}}', strtolower($moduleName), $contents);
             $filesystem->put(
                 $targetPath.'/'.$file->getFilename(),
                 $contents
@@ -229,12 +224,13 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     }
 
     /**
-     * function to copy one file from stub to target path with Replace the moduleName placeholder in the contents
+     * Copy one File Stubs with modified namespace
      */
     private function copyFileWithNamespace(string $moduleName, string $stubfile, string $targetfile): void
     {
         $contents = file_get_contents($stubfile);
         $contents = str_replace('{{moduleName}}', $moduleName, $contents);
+        $contents = str_replace('{{moduleNameLower}}', strtolower($moduleName), $contents);
         file_put_contents($targetfile, $contents);
     }
 

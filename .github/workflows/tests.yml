@@ -11,7 +11,7 @@ jobs:
       matrix:
         stack: [blade, react, vue, svelte]
         laravel: [11]
-        args: ["", --pest]
+        args: ["", --pest, --module=Authentication]
         include:
           - stack: vue
             args: --ssr --typescript

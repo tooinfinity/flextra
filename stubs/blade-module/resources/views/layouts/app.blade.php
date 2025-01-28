@@ -16,7 +16,7 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            @include('auth::layouts.navigation')
+            @include('{{moduleNameLower}}::layouts.navigation')
 
             <!-- Page Heading -->
             @isset($header)

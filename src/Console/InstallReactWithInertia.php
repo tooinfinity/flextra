@@ -149,10 +149,10 @@ trait InstallReactWithInertia
         copy(__DIR__.'/../../stubs/inertia-common/resources/css/app.css', resource_path('css/app.css'));
         copy(__DIR__.'/../../stubs/inertia-common/postcss.config.js', base_path('postcss.config.js'));
         copy(__DIR__.'/../../stubs/inertia-common/tailwind.config.js', base_path('tailwind.config.js'));
-        copy(__DIR__.'/../../stubs/inertia-react/vite.config.js', base_path('vite.config.js'));
+        $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-react/vite.config.js', base_path('vite.config.js'));
 
         if ($this->option('typescript')) {
-            copy(__DIR__.'/../../stubs/inertia-react-ts/tsconfig.json', base_path('tsconfig.json'));
+            $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-react-ts/tsconfig.json', base_path('tsconfig.json'));
             copy(__DIR__.'/../../stubs/inertia-react-ts/resources/js/app.tsx', resource_path('js/app.tsx'));
 
             if (file_exists(resource_path('js/bootstrap.js'))) {
@@ -164,7 +164,7 @@ trait InstallReactWithInertia
             $this->replaceInFile('.js', '.ts', resource_path('views/app.blade.php'));
             $this->replaceInFile('.vue', '.tsx', base_path('tailwind.config.js'));
         } else {
-            copy(__DIR__.'/../../stubs/inertia-common/jsconfig.json', base_path('jsconfig.json'));
+            $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-common/jsconfig.json', base_path('jsconfig.json'));
             copy(__DIR__.'/../../stubs/inertia-react/resources/js/app.jsx', resource_path('js/app.jsx'));
 
             $this->replaceInFile('.vue', '.jsx', base_path('tailwind.config.js'));
