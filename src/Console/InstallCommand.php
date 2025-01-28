@@ -18,6 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 
+use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\select;
 
@@ -133,14 +134,14 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     {
         return [
             'stack' => fn (): string => select(
-                label: 'Which stack do you want to install?',
+                label: 'Which Flextra stack would you like to install?',
                 options: [
+                    'blade' => 'Blade with Laravel Modules and Alpine.js',
                     'react' => 'Inertia React with Laravel Modules',
                     'vue' => 'Inertia Vue with Laravel Modules',
                     'svelte' => 'Inertia Svelte with Laravel Modules',
-                    'blade' => 'Blade with Laravel Modules',
                 ],
-                scroll: 6,
+                scroll: 4,
             ),
         ];
     }
@@ -152,7 +153,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     {
         $stack = $input->getArgument('stack');
 
-        if (in_array($stack, ['react', 'vue', 'svelte', 'blade'])) {
+        if (in_array($stack, ['react', 'vue', 'svelte'])) {
             collect(multiselect(
                 label: 'Would you like any optional features?',
                 options: [
@@ -163,7 +164,14 @@ final class InstallCommand extends Command implements PromptsForMissingInput
                 ],
                 hint: 'Use the space bar to select options.'
             ))->each(fn ($option) => $input->setOption($option, true));
+        } elseif (in_array($stack, ['blade', 'livewire'])) {
+            $input->setOption('dark', confirm(
+                label: 'Would you like dark mode support?',
+                default: false
+            ));
         }
+
+        $input->setOption('module', $this->ask('Enter the name of the module', 'Auth'));
 
         $input->setOption('pest', select(
             label: 'Which testing framework do you prefer?',
