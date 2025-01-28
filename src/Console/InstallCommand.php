@@ -62,14 +62,11 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         $this->moduleName = $this->option('module');
         if ($this->argument('stack') === 'vue') {
             return $this->installModuleInertiaVue($this->moduleName);
-        }
-        if ($this->argument('stack') === 'react') {
+        } elseif ($this->argument('stack') === 'react') {
             return $this->installModuleInertiaReact($this->moduleName);
-        }
-        if ($this->argument('stack') === 'svelte') {
+        } elseif ($this->argument('stack') === 'svelte') {
             return $this->installModuleInertiaSvelte($this->moduleName);
-        }
-        if ($this->argument('stack') === 'blade') {
+        } elseif ($this->argument('stack') === 'blade') {
             return $this->installBladeModule($this->moduleName);
         }
 
@@ -140,8 +137,10 @@ final class InstallCommand extends Command implements PromptsForMissingInput
                     'react' => 'Inertia React with Laravel Modules',
                     'vue' => 'Inertia Vue with Laravel Modules',
                     'svelte' => 'Inertia Svelte with Laravel Modules',
+                    'livewire' => 'Livewire with Laravel Modules',
+                    'api' => 'API with Laravel Modules',
                 ],
-                scroll: 4,
+                scroll: 6,
             ),
         ];
     }
