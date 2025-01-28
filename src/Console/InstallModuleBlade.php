@@ -75,7 +75,7 @@ trait InstallModuleBlade
             );
             $this->copyFileWithNamespace(
                 $moduleName,
-                __DIR__.'../../stubs/blade-module/resources/views/profile/edit.blade.php',
+                __DIR__.'/../../stubs/blade-module/resources/views/profile/edit.blade.php',
                 base_path('Modules/'.$moduleName.'/resources/views/profile/edit.blade.php')
             );
         } else {
