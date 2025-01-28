@@ -52,7 +52,7 @@ trait InstallModuleBlade
         );
 
         // Views...
-        if (! ($moduleName === 'Auth')) {
+        if ($moduleName !== 'Auth') {
             (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/views/components'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/blade-module/resources/views/components', base_path('Modules/'.$moduleName.'/resources/views/components'));
             $this->copyModuleFilesWithNamespace(

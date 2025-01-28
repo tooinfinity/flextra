@@ -241,7 +241,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         $lowerContents = str_replace('{{moduleNameLower}}', strtolower($moduleName), $contents);
         $contents = str_replace('{{moduleName}}', $moduleName, $contents);
         file_put_contents($targetfile, $contents);
-        file_put_contents($targetfile, $contents);
+        file_put_contents($targetfile, $lowerContents);
     }
 
     /**
