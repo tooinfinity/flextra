@@ -330,35 +330,6 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     }
 
     /**
-     * Process all stub files in a given directory, replacing placeholders with the module name.
-     */
-    private function processStubsInDirectory(string $directory, string $moduleName): void
-    {
-        $filesystem = new Filesystem;
-
-        // Ensure the directory exists
-        if (! $filesystem->exists($directory)) {
-            return;
-        }
-
-        // Get all files in the directory
-        $files = $filesystem->allFiles($directory);
-
-        foreach ($files as $file) {
-            $path = $file->getPathname();
-            $contents = file_get_contents($path);
-
-            // Replace the moduleName placeholder in the contents
-            $newContents = str_replace('{{moduleName}}', $moduleName, $contents);
-
-            // Write the new contents back to the file
-            file_put_contents($path, $newContents);
-            $lowerContents = str_replace('{{moduleNameLower}}', strtolower($moduleName), $contents);
-            file_put_contents($path, $lowerContents);
-        }
-    }
-
-    /**
      * Run the given stack commands.
      */
     private function runCommands(array $commands): void
