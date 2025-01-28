@@ -65,18 +65,18 @@ trait InstallModuleBlade
             );
             $this->copyModuleFilesWithNamespace(
                 $moduleName,
+                __DIR__.'../../stubs/blade-module/resources/views/profile/partials',
+                base_path('Modules/'.$moduleName.'/resources/views/profile/partials')
+            );
+            $this->copyFileWithNamespace(
+                $moduleName,
                 __DIR__.'/../../stubs/blade-module/resources/views/dashboard.blade.php',
                 base_path('Modules/'.$moduleName.'/resources/views/dashboard.blade.php')
             );
-            $this->copyModuleFilesWithNamespace(
+            $this->copyFileWithNamespace(
                 $moduleName,
                 __DIR__.'../../stubs/blade-module/resources/views/profile/edit.blade.php',
                 base_path('Modules/'.$moduleName.'/resources/views/profile/edit.blade.php')
-            );
-            $this->copyModuleFilesWithNamespace(
-                $moduleName,
-                __DIR__.'../../stubs/blade-module/resources/views/profile/partials',
-                base_path('Modules/'.$moduleName.'/resources/views/profile/partials')
             );
         } else {
             (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/views'));
