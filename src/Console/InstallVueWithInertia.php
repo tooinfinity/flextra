@@ -136,10 +136,10 @@ trait InstallVueWithInertia
         copy(__DIR__.'/../../stubs/inertia-common/resources/css/app.css', resource_path('css/app.css'));
         copy(__DIR__.'/../../stubs/inertia-common/postcss.config.js', base_path('postcss.config.js'));
         copy(__DIR__.'/../../stubs/inertia-common/tailwind.config.js', base_path('tailwind.config.js'));
-        copy(__DIR__.'/../../stubs/inertia-vue/vite.config.js', base_path('vite.config.js'));
+        $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-vue/vite.config.js', base_path('vite.config.js'));
 
         if ($this->option('typescript')) {
-            copy(__DIR__.'/../../stubs/inertia-vue-ts/tsconfig.json', base_path('tsconfig.json'));
+            $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-vue-ts/tsconfig.json', base_path('tsconfig.json'));
             copy(__DIR__.'/../../stubs/inertia-vue-ts/resources/js/app.ts', resource_path('js/app.ts'));
 
             if (file_exists(resource_path('js/app.js'))) {
@@ -154,7 +154,7 @@ trait InstallVueWithInertia
             $this->replaceInFile('.js', '.ts', base_path('vite.config.js'));
             $this->replaceInFile('.js', '.ts', resource_path('views/app.blade.php'));
         } else {
-            copy(__DIR__.'/../../stubs/inertia-common/jsconfig.json', base_path('jsconfig.json'));
+            $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-common/jsconfig.json', base_path('jsconfig.json'));
             copy(__DIR__.'/../../stubs/inertia-vue/resources/js/app.js', resource_path('js/app.js'));
         }
 
