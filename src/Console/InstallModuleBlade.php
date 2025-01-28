@@ -63,6 +63,7 @@ trait InstallModuleBlade
                 __DIR__.'/../../stubs/blade-module/resources/views/layouts',
                 base_path('Modules/'.$moduleName.'/resources/views/layouts')
             );
+            (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/views/profile/partials'));
             $this->copyModuleFilesWithNamespace(
                 $moduleName,
                 __DIR__.'../../stubs/blade-module/resources/views/profile/partials',
