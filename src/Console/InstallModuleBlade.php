@@ -52,8 +52,17 @@ trait InstallModuleBlade
         );
 
         // Views...
-        (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/views'));
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/blade-module/resources/views', base_path('Modules/'.$moduleName.'/resources/views'));
+        if(! ($moduleName === 'Auth')) {
+            $this->copyModuleFilesWithNamespace(
+                $moduleName,
+                __DIR__.'/../../stubs/blade-module/resources/views',
+                base_path('Modules/'.$moduleName.'/resources/views')
+            );
+        } else {
+            (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/views'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/blade-module/resources/views', base_path('Modules/'.$moduleName.'/resources/views'));
+        }
+
 
         if (! $this->option('dark')) {
             $this->removeDarkClasses((new Finder)
@@ -97,7 +106,6 @@ trait InstallModuleBlade
             $this->processStubsInDirectory($moduleName, base_path('Modules/'.$moduleName.'/app/Http/Controllers'));
             $this->processStubsInDirectory($moduleName, base_path('Modules/'.$moduleName.'/app/View/Components'));
             $this->processStubsInDirectory($moduleName, base_path('Modules/'.$moduleName.'/routes'));
-            $this->processStubsInDirectory($moduleName, base_path('Modules/'.$moduleName.'/resources/views'));
         }
 
         $this->components->info('Installing and building Node dependencies.');

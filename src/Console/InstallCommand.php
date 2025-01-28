@@ -343,31 +343,22 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         $filesystem = new Filesystem;
 
         // Ensure the directory exists
-        if (!$filesystem->exists($directory)) {
-            $this->output->writeln("Directory does not exist: $directory");
+        if (! $filesystem->exists($directory)) {
             return;
         }
 
-        // Get all files in the directory and its subdirectories
+        // Get all files in the directory
         $files = $filesystem->allFiles($directory);
 
         foreach ($files as $file) {
             $path = $file->getPathname();
             $contents = file_get_contents($path);
 
-            // Debugging output
-            $this->output->writeln("Processing file: $path");
-
             // Replace the moduleName placeholder in the contents
             $newContents = str_replace('{{moduleName}}', $moduleName, $contents);
 
-            // Write the new contents back to the file only if changes were made
-            if ($contents !== $newContents) {
-                file_put_contents($path, $newContents);
-                $this->output->writeln("Updated file: $path");
-            } else {
-                $this->output->writeln("No changes made to: $path");
-            }
+            // Write the new contents back to the file
+            file_put_contents($path, $newContents);
         }
     }
 
