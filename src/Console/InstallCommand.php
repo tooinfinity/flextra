@@ -227,6 +227,8 @@ final class InstallCommand extends Command implements PromptsForMissingInput
                 $targetPath.'/'.$file->getFilename(),
                 $contents
             );
+            $lowerContents = str_replace('{{moduleNameLower}}', strtolower($moduleName), $contents);
+            $filesystem->put($targetPath.'/'.$file->getFilename(), $lowerContents);
         }
     }
 
@@ -236,7 +238,9 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     private function copyFileWithNamespace(string $moduleName, string $stubfile, string $targetfile): void
     {
         $contents = file_get_contents($stubfile);
+        $lowerContents = str_replace('{{moduleNameLower}}', strtolower($moduleName), $contents);
         $contents = str_replace('{{moduleName}}', $moduleName, $contents);
+        file_put_contents($targetfile, $contents);
         file_put_contents($targetfile, $contents);
     }
 
@@ -359,6 +363,8 @@ final class InstallCommand extends Command implements PromptsForMissingInput
 
             // Write the new contents back to the file
             file_put_contents($path, $newContents);
+            $lowerContents = str_replace('{{moduleNameLower}}', strtolower($moduleName), $contents);
+            file_put_contents($path, $lowerContents);
         }
     }
 

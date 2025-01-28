@@ -9,12 +9,12 @@
         </p>
     </header>
 
-    <x-{{moduleName}}::danger-button
+    <x-{{moduleNameLower}}::danger-button
         x-data=""
         x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
-    >{{ __('Delete Account') }}</x-{{moduleName}}::danger-button>
+    >{{ __('Delete Account') }}</x-{{moduleNameLower}}::danger-button>
 
-    <x-{{moduleName}}::modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
+    <x-{{moduleNameLower}}::modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
         <form method="post" action="{{ route('profile.destroy') }}" class="p-6">
             @csrf
             @method('delete')
@@ -28,9 +28,9 @@
             </p>
 
             <div class="mt-6">
-                <x-{{moduleName}}::input-label for="password" value="{{ __('Password') }}" class="sr-only" />
+                <x-{{moduleNameLower}}::input-label for="password" value="{{ __('Password') }}" class="sr-only" />
 
-                <x-{{moduleName}}::text-input
+                <x-{{moduleNameLower}}::text-input
                     id="password"
                     name="password"
                     type="password"
@@ -38,18 +38,18 @@
                     placeholder="{{ __('Password') }}"
                 />
 
-                <x-{{moduleName}}::input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
+                <x-{{moduleNameLower}}::input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
             </div>
 
             <div class="mt-6 flex justify-end">
-                <x-{{moduleName}}::secondary-button x-on:click="$dispatch('close')">
+                <x-{{moduleNameLower}}::secondary-button x-on:click="$dispatch('close')">
                     {{ __('Cancel') }}
-                </x-{{moduleName}}::secondary-button>
+                </x-{{moduleNameLower}}::secondary-button>
 
-                <x-{{moduleName}}::danger-button class="ms-3">
+                <x-{{moduleNameLower}}::danger-button class="ms-3">
                     {{ __('Delete Account') }}
-                </x-{{moduleName}}::danger-button>
+                </x-{{moduleNameLower}}::danger-button>
             </div>
         </form>
-    </x-{{moduleName}}::modal>
+    </x-{{moduleNameLower}}::modal>
 </section>

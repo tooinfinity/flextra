@@ -12,6 +12,6 @@ class AppLayout extends Component
      */
     public function render(): View | string
     {
-        return view('{{moduleName}}::layouts.app');
+        return view('{{moduleNameLower}}::layouts.app');
     }
 }

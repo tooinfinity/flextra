@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Blade::component('{{moduleName}}::guest-layout', GuestLayout::class);
-        Blade::component('{{moduleName}}::app-layout', AppLayout::class);
+        Blade::component('{{moduleNameLower}}::guest-layout', GuestLayout::class);
+        Blade::component('{{moduleNameLower}}::app-layout', AppLayout::class);
     }
 }
