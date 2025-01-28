@@ -205,73 +205,33 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     }
 
     /**
-     * Copy Stubs with modified namespace
+     * Copy Folder Stubs with modified namespace
      */
     private function copyModuleFilesWithNamespace(string $moduleName, string $stubPath, string $targetPath): void
     {
         $filesystem = new Filesystem;
-
-        // Ensure the target path exists
         $filesystem->ensureDirectoryExists($targetPath);
-
-        // Get all files from the stub directory
-        $files = $filesystem->allFiles($stubPath);
-
+        $files = (new Filesystem)->allFiles($stubPath);
         foreach ($files as $file) {
-            $originalContents = file_get_contents($file->getPathname());
-
-            // Replace placeholders in the contents
-            $updatedContents = str_replace('{{moduleName}}', $moduleName, $originalContents);
-            $lowercaseContents = str_replace('{{moduleNameLower}}', strtolower($moduleName), $originalContents);
-
-            // Write both versions to the target path
-            $this->writeFile($targetPath . '/' . $file->getFilename(), $updatedContents, $lowercaseContents);
+            $contents = file_get_contents($file->getPathname());
+            $contents = str_replace('{{moduleName}}', $moduleName, $contents);
+            $contents = str_replace('{{moduleNameLower}}', strtolower($moduleName), $contents);
+            $filesystem->put(
+                $targetPath.'/'.$file->getFilename(),
+                $contents
+            );
         }
     }
 
     /**
-     * Write the updated contents to the target file.
+     * Copy one File Stubs with modified namespace
      */
-    private function writeFile(string $filePath, string $updatedContents, string $lowercaseContents): void
+    private function copyFileWithNamespace(string $moduleName, string $stubfile, string $targetfile): void
     {
-        $filesystem = new Filesystem;
-
-        // Write the updated contents
-        $filesystem->put($filePath, $updatedContents);
-
-        // Write the lowercase contents with a modified filename if needed
-        $lowercaseFilePath = $this->getLowercaseFilePath($filePath);
-        $filesystem->put($lowercaseFilePath, $lowercaseContents);
-    }
-
-    /**
-     * Get the file path for the lowercase version.
-     */
-    private function getLowercaseFilePath(string $filePath): string
-    {
-        // Modify the file path as needed for the lowercase version
-        // For example, you might want to change the filename or keep it the same
-        return $filePath; // Adjust this logic if necessary
-    }
-
-    /**
-     * function to copy one file from stub to target path with Replace the moduleName placeholder in the contents
-     */
-    private function copyFileWithNamespace(string $moduleName, string $stubFile, string $targetFile): void
-    {
-        // Read the contents of the stub file
-        $contents = file_get_contents($stubFile);
-
-        // Replace placeholders with the module name
-        $updatedContents = str_replace('{{moduleName}}', $moduleName, $contents);
-        $lowercaseContents = str_replace('{{moduleNameLower}}', strtolower($moduleName), $contents);
-
-        // Write the updated contents to the target file
-        file_put_contents($targetFile, $updatedContents);
-
-        // Optionally, write the lowercase contents to a different file
-        $lowercaseFilePath = $this->getLowercaseFilePath($targetFile);
-        file_put_contents($lowercaseFilePath, $lowercaseContents);
+        $contents = file_get_contents($stubfile);
+        $contents = str_replace('{{moduleName}}', $moduleName, $contents);
+        $contents = str_replace('{{moduleNameLower}}', strtolower($moduleName), $contents);
+        file_put_contents($targetfile, $contents);
     }
 
     /**
