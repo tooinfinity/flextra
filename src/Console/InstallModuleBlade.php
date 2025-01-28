@@ -121,14 +121,6 @@ trait InstallModuleBlade
         copy(__DIR__.'/../../stubs/blade-module/resources/css/app.css', resource_path('css/app.css'));
         copy(__DIR__.'/../../stubs/blade-module/resources/js/app.js', resource_path('js/app.js'));
 
-        // modify auth on blade file to use the module name
-        if (! ($moduleName === 'Auth')) {
-            $this->processStubsInDirectory($moduleName, app_path('Providers'));
-            $this->processStubsInDirectory($moduleName, base_path('Modules/'.$moduleName.'/app/Http/Controllers'));
-            $this->processStubsInDirectory($moduleName, base_path('Modules/'.$moduleName.'/app/View/Components'));
-            $this->processStubsInDirectory($moduleName, base_path('Modules/'.$moduleName.'/routes'));
-        }
-
         $this->components->info('Installing and building Node dependencies.');
 
         if (file_exists(base_path('pnpm-lock.yaml'))) {
