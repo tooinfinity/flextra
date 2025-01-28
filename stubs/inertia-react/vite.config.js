@@ -28,7 +28,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': '/resources/js',
-            '@auth': '/Modules/Auth/resources/assets/js'
+            '@auth': '/Modules/{{moduleName}}/resources/assets/js'
         }
     },
     optimizeDeps: {
