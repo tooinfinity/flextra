@@ -211,37 +211,67 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     {
         $filesystem = new Filesystem;
 
-        // check if the target path exists
+        // Ensure the target path exists
         $filesystem->ensureDirectoryExists($targetPath);
+
         // Get all files from the stub directory
-        $files = (new Filesystem)->allFiles($stubPath);
+        $files = $filesystem->allFiles($stubPath);
 
         foreach ($files as $file) {
-            $contents = file_get_contents($file->getPathname());
+            $originalContents = file_get_contents($file->getPathname());
 
-            // Replace the moduleName placeholder in the contents
-            $contents = str_replace('{{moduleName}}', $moduleName, $contents);
+            // Replace placeholders in the contents
+            $updatedContents = str_replace('{{moduleName}}', $moduleName, $originalContents);
+            $lowercaseContents = str_replace('{{moduleNameLower}}', strtolower($moduleName), $originalContents);
 
-            // Create the target file with replaced contents
-            $filesystem->put(
-                $targetPath.'/'.$file->getFilename(),
-                $contents
-            );
-            $lowerContents = str_replace('{{moduleNameLower}}', strtolower($moduleName), $contents);
-            $filesystem->put($targetPath.'/'.$file->getFilename(), $lowerContents);
+            // Write both versions to the target path
+            $this->writeFile($targetPath . '/' . $file->getFilename(), $updatedContents, $lowercaseContents);
         }
+    }
+
+    /**
+     * Write the updated contents to the target file.
+     */
+    private function writeFile(string $filePath, string $updatedContents, string $lowercaseContents): void
+    {
+        $filesystem = new Filesystem;
+
+        // Write the updated contents
+        $filesystem->put($filePath, $updatedContents);
+
+        // Write the lowercase contents with a modified filename if needed
+        $lowercaseFilePath = $this->getLowercaseFilePath($filePath);
+        $filesystem->put($lowercaseFilePath, $lowercaseContents);
+    }
+
+    /**
+     * Get the file path for the lowercase version.
+     */
+    private function getLowercaseFilePath(string $filePath): string
+    {
+        // Modify the file path as needed for the lowercase version
+        // For example, you might want to change the filename or keep it the same
+        return $filePath; // Adjust this logic if necessary
     }
 
     /**
      * function to copy one file from stub to target path with Replace the moduleName placeholder in the contents
      */
-    private function copyFileWithNamespace(string $moduleName, string $stubfile, string $targetfile): void
+    private function copyFileWithNamespace(string $moduleName, string $stubFile, string $targetFile): void
     {
-        $contents = file_get_contents($stubfile);
-        $lowerContents = str_replace('{{moduleNameLower}}', strtolower($moduleName), $contents);
-        $contents = str_replace('{{moduleName}}', $moduleName, $contents);
-        file_put_contents($targetfile, $contents);
-        file_put_contents($targetfile, $lowerContents);
+        // Read the contents of the stub file
+        $contents = file_get_contents($stubFile);
+
+        // Replace placeholders with the module name
+        $updatedContents = str_replace('{{moduleName}}', $moduleName, $contents);
+        $lowercaseContents = str_replace('{{moduleNameLower}}', strtolower($moduleName), $contents);
+
+        // Write the updated contents to the target file
+        file_put_contents($targetFile, $updatedContents);
+
+        // Optionally, write the lowercase contents to a different file
+        $lowercaseFilePath = $this->getLowercaseFilePath($targetFile);
+        file_put_contents($lowercaseFilePath, $lowercaseContents);
     }
 
     /**
