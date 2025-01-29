@@ -172,16 +172,14 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     {
         $stack = $input->getArgument('stack');
 
-        if (! $input->getOption('module')) {
-            $moduleName = text(
-                label: 'What is the name of the module you want to install?',
-                placeholder: 'Auth',
-                default: 'Auth',
-            );
+        $moduleName = text(
+            label: 'What is the name of the module you want to install?',
+            placeholder: 'Auth',
+            default: 'Auth',
+        );
 
-            $input->setOption('module', $moduleName);
-            $this->moduleName = $moduleName;
-        }
+        $input->setOption('module', $moduleName);
+        $this->moduleName = $moduleName;
 
         if (in_array($stack, ['react', 'vue', 'svelte'])) {
             collect(multiselect(
