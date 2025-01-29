@@ -22,9 +22,10 @@ use Symfony\Component\Process\Process;
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\select;
+use function Laravel\Prompts\text;
 
 #[AsCommand(name: 'flextra:install')]
-class InstallCommand extends Command implements PromptsForMissingInput
+final class InstallCommand extends Command implements PromptsForMissingInput
 {
     use InstallModuleBlade, InstallReactWithInertia, InstallSvelteWithInertia, InstallVueWithInertia;
 
@@ -63,11 +64,17 @@ class InstallCommand extends Command implements PromptsForMissingInput
         $this->moduleName = $this->option('module');
         if ($this->argument('stack') === 'vue') {
             return $this->installModuleInertiaVue($this->moduleName);
-        } elseif ($this->argument('stack') === 'react') {
+        }
+
+        if ($this->argument('stack') === 'react') {
             return $this->installModuleInertiaReact($this->moduleName);
-        } elseif ($this->argument('stack') === 'svelte') {
+        }
+
+        if ($this->argument('stack') === 'svelte') {
             return $this->installModuleInertiaSvelte($this->moduleName);
-        } elseif ($this->argument('stack') === 'blade') {
+        }
+
+        if ($this->argument('stack') === 'blade') {
             return $this->installBladeModule($this->moduleName);
         }
 
@@ -165,6 +172,13 @@ class InstallCommand extends Command implements PromptsForMissingInput
     {
         $stack = $input->getArgument('stack');
 
+        $moduleName = text(
+            label: 'What is the name of the module you want to install?',
+            placeholder: 'Auth',
+            default: 'Auth',
+        );
+        $input->setOption('module', $moduleName);
+
         if (in_array($stack, ['react', 'vue', 'svelte'])) {
             collect(multiselect(
                 label: 'Would you like any optional features?',
@@ -183,7 +197,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
             ));
         }
 
-        $input->setOption('module', $this->ask('Enter the name of the module', 'Auth'));
+        $input->setOption('module', $this->ask('Enter the name of the module', $this->moduleName));
 
         $input->setOption('pest', select(
             label: 'Which testing framework do you prefer?',
