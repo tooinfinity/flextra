@@ -131,7 +131,7 @@ trait InstallSvelteWithInertia
                 ->in(resource_path('js'))
                 ->in(base_path('Modules/'.$moduleName.'/resources/assets/js'))
                 ->name('*.svelte')
-                ->notName('Welcome.vue')
+                ->notName('Welcome.svelte')
             );
         }
         // Tests...
