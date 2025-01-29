@@ -54,14 +54,19 @@ final class InstallCommand extends Command implements PromptsForMissingInput
      * The name of the module.
      * I prefer auth because it's a must-have module for breeze to live
      */
-    private string $moduleName = 'Auth';
+    private string $moduleName;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->moduleName = $this->option('module');
+    }
 
     /**
      * Execute the console command.
      */
     public function handle(): ?int
     {
-        $this->moduleName = $this->option('module');
         if ($this->argument('stack') === 'vue') {
             return $this->installModuleInertiaVue($this->moduleName);
         }
@@ -91,23 +96,23 @@ final class InstallCommand extends Command implements PromptsForMissingInput
 
         // Controllers...
         $this->copyModuleFilesWithNamespace(
-            $this->moduleName,
+            $moduleName,
             __DIR__.'/../../stubs/inertia-php/Auth/Controllers',
             base_path('Modules/'.$moduleName.'/app/Http/Controllers')
         );
         $this->copyModuleFilesWithNamespace(
-            $this->moduleName,
+            $moduleName,
             __DIR__.'/../../stubs/inertia-php/Profile/Controllers',
             base_path('Modules/'.$moduleName.'/app/Http/Controllers')
         );
         // Requests...
         $this->copyModuleFilesWithNamespace(
-            $this->moduleName,
+            $moduleName,
             __DIR__.'/../../stubs/inertia-php/Auth/Requests',
             base_path('Modules/'.$moduleName.'/app/Http/Requests')
         );
         $this->copyModuleFilesWithNamespace(
-            $this->moduleName,
+            $moduleName,
             __DIR__.'/../../stubs/inertia-php/Profile/Requests',
             base_path('Modules/'.$moduleName.'/app/Http/Requests')
         );
@@ -172,12 +177,16 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     {
         $stack = $input->getArgument('stack');
 
-        $moduleName = text(
-            label: 'What is the name of the module you want to install?',
-            placeholder: 'Auth',
-            default: 'Auth',
-        );
-        $input->setOption('module', $moduleName);
+        if (! $input->getOption('module')) {
+            $moduleName = text(
+                label: 'What is the name of the module you want to install?',
+                placeholder: 'Auth',
+                default: 'Auth',
+            );
+
+            $input->setOption('module', $moduleName);
+            $this->moduleName = $moduleName;
+        }
 
         if (in_array($stack, ['react', 'vue', 'svelte'])) {
             collect(multiselect(
