@@ -33,7 +33,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
      *
      * @var string
      */
-    protected $signature = 'flextra:install {stack? : The Development stack that should be installed with laravel Modules (react, vue, svelte)}
+    protected $signature = 'flextra:install {stack : The development stack that should be installed with laravel Modules (blade,react,vue,svelte,livewire,api)}
                             {--dark : Indicate that dark mode support should be installed}
                             {--pest : Indicate that Pest should be installed}
                             {--ssr : Indicates if Inertia SSR support should be installed}
@@ -47,7 +47,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
      *
      * @var string
      */
-    protected $description = 'Install the flextra with the Inertia stack,Blade with laravel Modules';
+    protected $description = 'Install the flextra controllers and resources with laravel Modules';
 
     /**
      * The name of the module.
@@ -60,7 +60,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
      */
     public function handle(): ?int
     {
-        // $this->moduleName = $this->option('module');
+        $this->moduleName = $this->option('module');
         if ($this->argument('stack') === 'vue') {
             return $this->installModuleInertiaVue($this->moduleName);
         } elseif ($this->argument('stack') === 'react') {
@@ -130,6 +130,10 @@ class InstallCommand extends Command implements PromptsForMissingInput
      */
     protected function phpBinary(): string
     {
+        if (function_exists('Illuminate\Support\php_binary')) {
+            return \Illuminate\Support\php_binary();
+        }
+
         return (new PhpExecutableFinder)->find(false) ?: 'php';
     }
 
@@ -197,6 +201,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
 
         $stubStack = match ($this->argument('stack')) {
             'api' => 'api',
+            'livewire' => 'livewire',
             'blade' => 'blade-module',
             default => 'inertia-php',
         };
