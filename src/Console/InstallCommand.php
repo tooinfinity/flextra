@@ -201,8 +201,6 @@ final class InstallCommand extends Command implements PromptsForMissingInput
             ));
         }
 
-        $input->setOption('module', $this->ask('Enter the name of the module', $this->moduleName));
-
         $input->setOption('pest', select(
             label: 'Which testing framework do you prefer?',
             options: ['Pest', 'PHPUnit'],
