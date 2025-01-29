@@ -23,8 +23,8 @@ use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\select;
 
-#[AsCommand(name: 'flextra:install')] // Flextra: Inspired by "Flexibility" and "Extra", perfect for multi-framework tools.
-final class InstallCommand extends Command implements PromptsForMissingInput
+#[AsCommand(name: 'flextra:install')]
+class InstallCommand extends Command implements PromptsForMissingInput
 {
     use InstallModuleBlade, InstallReactWithInertia, InstallSvelteWithInertia, InstallVueWithInertia;
 
@@ -60,7 +60,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
      */
     public function handle(): ?int
     {
-        $this->moduleName = $this->option('module');
+        // $this->moduleName = $this->option('module');
         if ($this->argument('stack') === 'vue') {
             return $this->installModuleInertiaVue($this->moduleName);
         } elseif ($this->argument('stack') === 'react') {
