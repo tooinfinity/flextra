@@ -96,10 +96,6 @@ trait InstallSvelteWithInertia
         (new Filesystem)->ensureDirectoryExists(resource_path('js/Layouts'));
         (new Filesystem)->ensureDirectoryExists(resource_path('js/Pages'));
 
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-svelte/resources/js/Components', resource_path('js/Components'));
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-svelte/resources/js/Layouts', resource_path('js/Layouts'));
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-svelte/resources/js/Pages', resource_path('js/Pages'));
-
         (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/Components'));
         (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/Layouts'));
         (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/assets/js/Pages'));
