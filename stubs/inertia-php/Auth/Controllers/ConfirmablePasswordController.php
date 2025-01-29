@@ -19,7 +19,7 @@ final class ConfirmablePasswordController extends Controller
      */
     public function show(): Response
     {
-        return Inertia::render('Auth::Auth/ConfirmPassword');
+        return Inertia::render('{{moduleName}}::Auth/ConfirmPassword');
     }
 
     /**

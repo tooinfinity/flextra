@@ -56,17 +56,12 @@ final class InstallCommand extends Command implements PromptsForMissingInput
      */
     private string $moduleName;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->moduleName = $this->option('module');
-    }
-
     /**
      * Execute the console command.
      */
     public function handle(): ?int
     {
+        $this->moduleName = $this->option('module');
         if ($this->argument('stack') === 'vue') {
             return $this->installModuleInertiaVue($this->moduleName);
         }
