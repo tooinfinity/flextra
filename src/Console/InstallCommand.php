@@ -16,6 +16,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
 
 use function Laravel\Prompts\confirm;
@@ -122,6 +123,14 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         // Routes...
         $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/routes/web.php', base_path('Modules/'.$moduleName.'/routes/web.php'));
         $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-php/routes/auth.php', base_path('Modules/'.$moduleName.'/routes/auth.php'));
+    }
+
+    /**
+     * Get the path to the appropriate PHP binary.
+     */
+    protected function phpBinary(): string
+    {
+        return (new PhpExecutableFinder)->find(false) ?: 'php';
     }
 
     /**
