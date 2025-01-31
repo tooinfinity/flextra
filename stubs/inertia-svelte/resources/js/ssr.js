@@ -1,9 +1,11 @@
 import { createInertiaApp } from '@inertiajs/svelte'
 import createServer from '@inertiajs/svelte/server'
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
+import { render } from 'svelte/server'
 
 createServer((page) =>
     createInertiaApp({
+        page,
         title: (title) => `${title} - ${appName}`,
         resolve: (name) => {
             const pages = import.meta.glob([
@@ -78,12 +80,6 @@ createServer((page) =>
             }
         },
         setup({ App, props }) {
-            global.route = (name, params, absolute) =>
-                route(name, params, absolute, {
-                    ...page.props.ziggy,
-                    location: new URL(page.props.ziggy.location)
-                });
-
             return render(App, { props });
         },
         progress: {
