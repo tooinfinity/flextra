@@ -1,5 +1,5 @@
 <script>
-    import { Link, page } from '@inertiajs/svelte'
+    import { inertia, page } from '@inertiajs/svelte'
 
     let { canLogin, canRegister, laravelVersion, phpVersion } = $props()
 
@@ -44,27 +44,30 @@
                 {#if canLogin}
                     <nav class="-mx-3 flex flex-1 justify-end">
                         {#if $page.props.auth.user}
-                            <Link
+                            <a
+                                use:inertia
                                 href={route('dashboard')}
                                 class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                             >
                                 Dashboard
-                            </Link>
+                            </a>
                         {:else}
-                            <Link
+                            <a
+                                use:inertia
                                 href={route('login')}
                                 class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                             >
                                 Log in
-                            </Link>
+                            </a>
 
                             {#if canRegister}
-                                <Link
+                                <a
+                                    use:inertia
                                     href={route('register')}
                                     class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                 >
                                     Register
-                                </Link>
+                                </a>
                             {/if}
                         {/if}
                     </nav>

@@ -4,8 +4,7 @@
     import InputLabel from '@auth/Components/InputLabel.svelte'
     import PrimaryButton from '@auth/Components/PrimaryButton.svelte'
     import TextInput from '@auth/Components/TextInput.svelte'
-    import { Link, useForm } from '@inertiajs/svelte'
-
+    import { inertia, useForm } from '@inertiajs/svelte'
 
     const form = useForm({
         name: '',
@@ -91,12 +90,13 @@
         </div>
 
         <div class="mt-4 flex items-center justify-end">
-            <Link
-                href={route('login')}
+            <a
+                use:inertia
+                href="/login"
                 class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
             >
                 Already registered?
-            </Link>
+            </a>
 
             <PrimaryButton class="ms-4 {$form.processing && 'opacity-25'}" disabled={$form.processing}>
                 Register

@@ -1,5 +1,5 @@
 <script>
-    import { page } from '@inertiajs/svelte'
+    import { inertia, page } from '@inertiajs/svelte'
     import ApplicationLogo from '@auth/Components/ApplicationLogo.svelte'
     import Dropdown from '@auth/Components/Dropdown.svelte'
     import DropdownLink from '@auth/Components/DropdownLink.svelte'
@@ -20,11 +20,11 @@
                     <div class="flex">
                         <!-- Logo -->
                         <div class="flex shrink-0 items-center">
-                            <NavLink href={route('dashboard')}>
+                            <a use:inertia href={route('dashboard')}>
                                 <ApplicationLogo
                                     class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200"
                                 />
-                            </NavLink>
+                            </a>
                         </div>
 
                         <!-- Navigation Links -->

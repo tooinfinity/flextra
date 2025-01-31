@@ -3,8 +3,7 @@ import './bootstrap'
 
 import { createInertiaApp } from '@inertiajs/svelte'
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
-import { mount } from 'svelte'
-
+import { hydrate, mount } from 'svelte'
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
@@ -82,7 +81,15 @@ createInertiaApp({
         }
     },
     setup({ el, App, props }) {
-        mount(App, { target: el, props });
+        if (!el) {
+            console.error('Target element not found');
+            return;
+        }
+        if (el.dataset.serverRendered === 'true') {
+            hydrate(App, { target: el, props });
+        } else {
+            mount(App, { target: el, props });
+        }
     },
     progress: {
         color: '#4B5563',
