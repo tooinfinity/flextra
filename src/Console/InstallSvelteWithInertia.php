@@ -147,7 +147,6 @@ trait InstallSvelteWithInertia
         copy(__DIR__.'/../../stubs/inertia-common/tailwind.config.js', base_path('tailwind.config.js'));
         copy(__DIR__.'/../../stubs/inertia-svelte/svelte.config.js', base_path('svelte.config.js'));
         $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-svelte/vite.config.js', base_path('vite.config.js'));
-        $this->replaceInFile('.vue', '.svelte', base_path('tailwind.config.js'));
 
         if ($this->option('typescript')) {
             $this->copyFileWithNamespace($moduleName, __DIR__.'/../../stubs/inertia-svelte-ts/tsconfig.json', base_path('tsconfig.json'));
