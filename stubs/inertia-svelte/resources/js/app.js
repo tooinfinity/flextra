@@ -4,6 +4,7 @@ import './bootstrap'
 import { createInertiaApp } from '@inertiajs/svelte'
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
 import { hydrate, mount } from 'svelte'
+
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({

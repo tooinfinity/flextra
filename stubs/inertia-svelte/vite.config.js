@@ -11,7 +11,7 @@ const getModuleEntries = () => {
 
     return fs.readdirSync(modulesPath)
         .filter(file => fs.statSync(path.join(modulesPath, file)).isDirectory())
-        .map(module => `Modules/${module}/Resources/assets/js/app.jsx`)
+        .map(module => `Modules/${module}/Resources/assets/js/app.js`)
         .filter(file => fs.existsSync(path.resolve(__dirname, file)));
 };
 
@@ -33,6 +33,6 @@ export default defineConfig({
         }
     },
     optimizeDeps: {
-        include: ['@inertiajs/react']
+        include: ['@inertiajs/svelte']
     }
 });
