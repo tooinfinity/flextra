@@ -52,7 +52,7 @@ trait InstallModuleLivewire
         // Livewire Components...
         $this->copyModuleFilesWithNamespaceLivewire(
             $moduleName,
-            __DIR__.'/../../stubs/'($functional ? 'livewire-functional' : 'livewire')
+            __DIR__.'/../../stubs/'.($functional ? 'livewire-functional' : 'livewire')
             .'/resources/views/livewire',
             base_path('Modules/'.$moduleName.'/resources/views/livewire')
         );
