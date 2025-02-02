@@ -27,7 +27,7 @@ use function Laravel\Prompts\text;
 #[AsCommand(name: 'flextra:install')]
 final class InstallCommand extends Command implements PromptsForMissingInput
 {
-    use InstallModuleLivewire, InstallModuleBlade, InstallReactWithInertia, InstallSvelteWithInertia, InstallVueWithInertia;
+    use InstallModuleBlade, InstallModuleLivewire, InstallReactWithInertia, InstallSvelteWithInertia, InstallVueWithInertia;
 
     /**
      * The console command signature and name.
