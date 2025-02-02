@@ -27,7 +27,7 @@ use function Laravel\Prompts\text;
 #[AsCommand(name: 'flextra:install')]
 final class InstallCommand extends Command implements PromptsForMissingInput
 {
-    use InstallModuleBlade, InstallReactWithInertia, InstallSvelteWithInertia, InstallVueWithInertia;
+    use InstallModuleLivewire, InstallModuleBlade, InstallReactWithInertia, InstallSvelteWithInertia, InstallVueWithInertia;
 
     /**
      * The console command signature and name.
@@ -78,7 +78,15 @@ final class InstallCommand extends Command implements PromptsForMissingInput
             return $this->installBladeModule($this->moduleName);
         }
 
-        $this->components->error('Invalid stack. Supported stacks are [react], [vue], [svelte]  and [blade].');
+        if ($this->argument('stack') === 'livewire') {
+            return $this->installLivewireModule($this->moduleName, false);
+        }
+
+        if ($this->argument('stack') === 'livewire-functional') {
+            return $this->installLivewireModule($this->moduleName, true);
+        }
+
+        $this->components->error('Invalid stack. Supported stacks are [react], [vue], [svelte], [livewire], [livewire-functional]  and [blade].');
 
         return 1;
     }
@@ -157,7 +165,8 @@ final class InstallCommand extends Command implements PromptsForMissingInput
                     'react' => 'Inertia React with Laravel Modules',
                     'vue' => 'Inertia Vue with Laravel Modules',
                     'svelte' => 'Inertia Svelte with Laravel Modules',
-                    'livewire' => 'Livewire with Laravel Modules',
+                    'livewire' => 'Livewire (Volt Class API) with Alpine and Laravel Modules',
+                    'livewire-functional' => 'Livewire (Functional API) with Alpine and Laravel Modules',
                     'api' => 'API with Laravel Modules',
                 ],
                 scroll: 6,
@@ -192,7 +201,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
                 ],
                 hint: 'Use the space bar to select options.'
             ))->each(fn ($option) => $input->setOption($option, true));
-        } elseif (in_array($stack, ['blade', 'livewire'])) {
+        } elseif (in_array($stack, ['blade', 'livewire', 'livewire-functional'])) {
             $input->setOption('dark', confirm(
                 label: 'Would you like dark mode support?',
                 default: false
@@ -215,7 +224,8 @@ final class InstallCommand extends Command implements PromptsForMissingInput
 
         $stubStack = match ($this->argument('stack')) {
             'api' => 'api',
-            'livewire' => 'livewire',
+            'livewire' => 'livewire-common',
+            'livewire-functional' => 'livewire-common',
             'blade' => 'blade-module',
             default => 'inertia-php',
         };
