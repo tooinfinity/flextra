@@ -6,6 +6,7 @@ namespace TooInfinity\Flextra\Console;
 
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Process\Process;
 
 trait InstallModuleLivewire
 {
