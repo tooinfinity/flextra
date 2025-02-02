@@ -38,7 +38,7 @@ trait InstallModuleLivewire
             ->run();
 
         // Controllers
-        $this->copyFileWithNamespace(
+        $this->copyModuleFilesWithNamespaceLivewire(
             $moduleName,
             __DIR__.'/../../stubs/blade-module/app/Http/Controllers/Auth/VerifyEmailController.php',
             base_path('Modules/'.$moduleName.'/app/Http/Controllers/Auth/VerifyEmailController.php')
