@@ -168,70 +168,7 @@ trait InstallModuleLivewire
         }
 
         $this->components->info('Flextra Modules '.$moduleName.'  Livewire scaffolding installed successfully.');
-    }
 
-    /**
-     * Helper function to copy files from a stub directory to a target directory.
-     */
-    private function copyModuleFilesWithNamespaceLivewire(string $moduleName, string $stubPath, string $targetPath): void
-    {
-        $filesystem = new Filesystem;
-
-        // Ensure the target directory exists
-        $filesystem->ensureDirectoryExists($targetPath);
-
-        // Check if the stub path is a file
-        if ($filesystem->isFile($stubPath)) {
-            // Process a single file
-            $this->processFile($moduleName, $stubPath, $targetPath, $filesystem);
-        } else {
-            // Process all files in the directory recursively
-            $files = $filesystem->allFiles($stubPath);
-            foreach ($files as $file) {
-                $this->processFile($moduleName, $file->getPathname(), $targetPath, $filesystem, $stubPath);
-            }
-        }
-    }
-
-    /**
-     * Helper function to process a single file.
-     */
-    private function processFile(string $moduleName, string $filePath, string $targetPath, Filesystem $filesystem, ?string $stubPath = null): void
-    {
-        // Calculate the relative path if a stub path is provided
-        $relativePath = '';
-        if ($stubPath) {
-            $relativePath = $this->getRelativePath($filePath, $stubPath);
-        }
-
-        // Create the target directory structure if it doesn't exist
-        $targetDir = $targetPath.($relativePath ? '/'.$relativePath : '');
-        $filesystem->ensureDirectoryExists($targetDir);
-
-        // Read and replace placeholders in the file contents
-        $contents = file_get_contents($filePath);
-        $contents = str_replace(['{{moduleName}}', '{{moduleNameLower}}'], [$moduleName, strtolower($moduleName)], $contents);
-
-        // Write the modified contents to the target file
-        $filesystem->put(
-            $targetDir.'/'.basename($filePath),
-            $contents
-        );
-    }
-
-    /**
-     * Helper function to calculate the relative path of a file within a directory.
-     */
-    private function getRelativePath(string $filePath, string $directory): string
-    {
-        $directory = rtrim($directory, '/\\').DIRECTORY_SEPARATOR;
-        $filePath = rtrim($filePath, '/\\');
-
-        // Ensure the file is within the directory
-        if (str_starts_with($filePath, $directory)) {
-            return ltrim(substr($filePath, strlen($directory)), '/\\');
-        }
-
-        return '';
+        return 0;
     }
 }
