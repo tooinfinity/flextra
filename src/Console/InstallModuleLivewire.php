@@ -38,62 +38,89 @@ trait InstallModuleLivewire
             ->run();
 
         // Controllers
-        $this->copyModuleFilesWithNamespaceLivewire(
+        $this->copyFileWithNamespace(
             $moduleName,
             __DIR__.'/../../stubs/blade-module/app/Http/Controllers/Auth/VerifyEmailController.php',
             base_path('Modules/'.$moduleName.'/app/Http/Controllers/VerifyEmailController.php')
         );
 
-        // Views...
-        $this->copyModuleFilesWithNamespaceLivewire(
-            $moduleName,
-            __DIR__.'/../../stubs/livewire-common/resources/views',
-            base_path('Modules/'.$moduleName.'/resources/views')
-        );
-
-        // Livewire Components...
-        $this->copyModuleFilesWithNamespaceLivewire(
-            $moduleName,
-            __DIR__.'/../../stubs/'.($functional ? 'livewire-functional' : 'livewire')
-            .'/resources/views/livewire',
-            base_path('Modules/'.$moduleName.'/resources/views/livewire')
-        );
-
-        // Views Components...
-        $this->copyModuleFilesWithNamespaceLivewire(
-            $moduleName,
-            __DIR__.'/../../stubs/blade-module/resources/views/components',
-            base_path('Modules/'.$moduleName.'/resources/views/components')
-        );
-        $this->copyModuleFilesWithNamespaceLivewire(
-            $moduleName,
-            __DIR__.'/../../stubs/livewire-common/resources/views/components',
-            base_path('Modules/'.$moduleName.'/resources/views/components')
-        );
-
-        // Views Layouts...
-        $this->copyModuleFilesWithNamespaceLivewire(
+        // Views Livewire common ...
+        $this->copyModuleFilesWithNamespace(
             $moduleName,
             __DIR__.'/../../stubs/livewire-common/resources/views/layouts',
             base_path('Modules/'.$moduleName.'/resources/views/layouts')
         );
+        $this->copyModuleFilesWithNamespace(
+            $moduleName,
+            __DIR__.'/../../stubs/livewire-common/resources/views/components',
+            base_path('Modules/'.$moduleName.'/resources/views/components')
+        );
+        $this->copyFileWithNamespace(
+            $moduleName,
+            __DIR__.'/../../stubs/livewire-common/resources/views/dashboard.blade.php',
+            base_path('Modules/'.$moduleName.'/resources/views/dashboard.blade.php')
+        );
+        $this->copyFileWithNamespace(
+            $moduleName,
+            __DIR__.'/../../stubs/livewire-common/resources/views/profile.blade.php',
+            base_path('Modules/'.$moduleName.'/resources/views/profile.blade.php')
+        );
+        $this->copyFileWithNamespace(
+            $moduleName,
+            __DIR__.'/../../stubs/livewire-common/resources/views/welcome.blade.php',
+            base_path('Modules/'.$moduleName.'/resources/views/welcome.blade.php')
+        );
+
+        // Livewire Components...
+        $this->copyModuleFilesWithNamespace(
+            $moduleName,
+            __DIR__.'/../../stubs/'.($functional ? 'livewire-functional' : 'livewire')
+            .'/resources/views/livewire/layout',
+            base_path('Modules/'.$moduleName.'/resources/views/livewire/layout')
+        );
+        (new Filesystem)->ensureDirectoryExists(base_path('Modules/'.$moduleName.'/resources/views/livewire/pages'));
+        $this->copyModuleFilesWithNamespace(
+            $moduleName,
+            __DIR__.'/../../stubs/'.($functional ? 'livewire-functional' : 'livewire')
+            .'/resources/views/livewire/pages/auth',
+            base_path('Modules/'.$moduleName.'/resources/views/livewire/pages/auth')
+        );
+        $this->copyModuleFilesWithNamespace(
+            $moduleName,
+            __DIR__.'/../../stubs/'.($functional ? 'livewire-functional' : 'livewire')
+            .'/resources/views/livewire/profile',
+            base_path('Modules/'.$moduleName.'/resources/views/livewire/profile')
+        );
+        $this->copyModuleFilesWithNamespace(
+            $moduleName,
+            __DIR__.'/../../stubs/'.($functional ? 'livewire-functional' : 'livewire')
+            .'/resources/views/livewire/welcome',
+            base_path('Modules/'.$moduleName.'/resources/views/livewire/welcome')
+        );
+
+        // Views Components...
+        $this->copyModuleFilesWithNamespace(
+            $moduleName,
+            __DIR__.'/../../stubs/blade-module/resources/views/components',
+            base_path('Modules/'.$moduleName.'/resources/views/components')
+        );
 
         // Components...
-        $this->copyModuleFilesWithNamespaceLivewire(
+        $this->copyModuleFilesWithNamespace(
             $moduleName,
             __DIR__.'/../../stubs/blade-module/app/View/Components',
             base_path('Modules/'.$moduleName.'/app/View/Components')
         );
 
         // Actions...
-        $this->copyModuleFilesWithNamespaceLivewire(
+        $this->copyModuleFilesWithNamespace(
             $moduleName,
             __DIR__.'/../../stubs/livewire-common/app/Livewire/Actions',
             base_path('Modules/'.$moduleName.'/app/Livewire/Actions')
         );
 
         // Forms...
-        $this->copyModuleFilesWithNamespaceLivewire(
+        $this->copyModuleFilesWithNamespace(
             $moduleName,
             __DIR__.'/../../stubs/livewire-common/app/Livewire/Forms',
             base_path('Modules/'.$moduleName.'/app/Livewire/Forms')
@@ -115,7 +142,7 @@ trait InstallModuleLivewire
         }
 
         // Routes...
-        $this->copyModuleFilesWithNamespaceLivewire(
+        $this->copyModuleFilesWithNamespace(
             $moduleName,
             __DIR__.'/../../stubs/livewire-common/routes',
             base_path('Modules/'.$moduleName.'/routes')
