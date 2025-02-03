@@ -15,6 +15,8 @@ trait InstallModuleLivewire
      */
     protected function installLivewireModule(string $moduleName, $functional): ?int
     {
+        // Install Laravel Modules Package
+        $this->installModuleDependencies();
         // NPM Packages...
         $this->updateNodePackages(function ($packages) {
             return [
