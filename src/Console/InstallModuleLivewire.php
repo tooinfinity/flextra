@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TooInfinity\Flextra\Console;
 
+use Composer\InstalledVersions;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
@@ -32,10 +33,14 @@ trait InstallModuleLivewire
             return 1;
         }
 
+
         // Install Volt...
         (new Process([$this->phpBinary(), 'artisan', 'volt:install'], base_path()))
             ->setTimeout(null)
             ->run();
+
+        // Install Livewire Modules...
+        $this->installModuleLivewireDependencies();
 
         // Controllers
         $this->copyFileWithNamespace(
@@ -170,5 +175,20 @@ trait InstallModuleLivewire
         $this->components->info('Flextra Modules '.$moduleName.'  Livewire scaffolding installed successfully.');
 
         return 0;
+    }
+
+    /**
+     * install laravel module livewire dependencies
+     *
+     */
+    protected function installModuleLivewireDependencies(): void
+    {
+        // Check if laravel Modules installed and install it
+        if (! InstalledVersions::isInstalled('mhmiton/laravel-modules-livewire')) {
+            $this->runCommands(['composer require mhmiton/laravel-modules-livewire --dev']);
+            $this->runCommands(['php artisan vendor:publish --tag=modules-livewire-config']);
+            $this->runCommands(['composer dump-autoload']);
+        }
+
     }
 }

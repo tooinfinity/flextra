@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Auth\VerifyEmailController;
+use Modules\{{moduleName}}\Http\Controllers\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
