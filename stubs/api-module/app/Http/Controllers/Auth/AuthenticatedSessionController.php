@@ -3,7 +3,7 @@
 namespace Modules\{{moduleName}}\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
+use Modules\{{moduleName}}\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
