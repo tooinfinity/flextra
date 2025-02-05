@@ -515,8 +515,9 @@ final class InstallCommand extends Command implements PromptsForMissingInput
          $this->moduleName = $moduleNameInput ?? $this->moduleName;*/
         if ($api === true) {
             $this->runCommands(["php artisan module:make {$this->moduleName} --api"]);
+        } else {
+            $this->runCommands(["php artisan module:make {$this->moduleName}"]);
         }
-        $this->runCommands(["php artisan module:make {$this->moduleName}"]);
     }
 
     /**
