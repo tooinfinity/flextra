@@ -28,7 +28,7 @@ use function Laravel\Prompts\text;
 #[AsCommand(name: 'flextra:install')]
 final class InstallCommand extends Command implements PromptsForMissingInput
 {
-    use InstallModuleBlade, InstallReactWithInertia, InstallSvelteWithInertia, InstallVueWithInertia;
+    use InstallModuleApi, InstallModuleBlade, InstallReactWithInertia, InstallSvelteWithInertia, InstallVueWithInertia;
 
     /**
      * The console command signature and name.
@@ -77,6 +77,10 @@ final class InstallCommand extends Command implements PromptsForMissingInput
 
         if ($this->argument('stack') === 'blade') {
             return $this->installBladeModule($this->moduleName);
+        }
+
+        if ($this->argument('stack') === 'api') {
+            return $this->installApiModule($this->moduleName);
         }
 
         $this->components->error('Invalid stack. Supported stacks are [react], [vue], [svelte]  and [blade].');
@@ -158,6 +162,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
                     'react' => 'Inertia React with Laravel Modules',
                     'vue' => 'Inertia Vue with Laravel Modules',
                     'svelte' => 'Inertia Svelte with Laravel Modules',
+                    'api' => 'API with Laravel Modules',
                 ],
                 scroll: 6,
             ),
@@ -214,6 +219,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         (new Filesystem)->ensureDirectoryExists(base_path('tests/Feature'));
 
         $stubStack = match ($this->argument('stack')) {
+            'api' => 'api-module',
             'blade' => 'blade-module',
             default => 'inertia-php',
         };
@@ -486,7 +492,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
      * Install Module Dependencies
      * @throws JsonException
      */
-    private function installModuleDependencies(): void
+    private function installModuleDependencies(bool $api = false): void
     {
         // Check if laravel Modules installed and install it
         if (! InstalledVersions::isInstalled('nwidart/laravel-modules')) {
@@ -507,7 +513,11 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         // because it's a must-have module for breeze to live
         /* $moduleNameInput = $this->ask('Enter the name of the module');
          $this->moduleName = $moduleNameInput ?? $this->moduleName;*/
-        $this->runCommands(["php artisan module:make {$this->moduleName}"]);
+        if ($api === true) {
+            $this->runCommands(["php artisan module:make {$this->moduleName} --api"]);
+        } else {
+            $this->runCommands(["php artisan module:make {$this->moduleName}"]);
+        }
     }
 
     /**

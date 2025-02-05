@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        stack: [blade, react, vue, svelte]
+        stack: [blade, react, vue, svelte, api]
         laravel: [11]
         args: ["", --pest, --module=Authentication]
         include:
@@ -52,10 +52,12 @@ jobs:
           php artisan flextra:install  ${{ matrix.stack }} ${{ matrix.args }}
 
       - name: Install NPM dependencies
+        if: matrix.stack != 'api'
         run: |
           npm install
 
       - name: Compile assets
+        if: matrix.stack != 'api'
         run: |
           npm run build
 
