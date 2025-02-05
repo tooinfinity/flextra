@@ -11,6 +11,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use JsonException;
 use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,14 +28,14 @@ use function Laravel\Prompts\text;
 #[AsCommand(name: 'flextra:install')]
 final class InstallCommand extends Command implements PromptsForMissingInput
 {
-    use InstallModuleBlade, InstallModuleLivewire, InstallReactWithInertia, InstallSvelteWithInertia, InstallVueWithInertia;
+    use InstallModuleApi, InstallModuleBlade, InstallModuleLivewire, InstallReactWithInertia, InstallSvelteWithInertia, InstallVueWithInertia;
 
     /**
      * The console command signature and name.
      *
      * @var string
      */
-    protected $signature = 'flextra:install {stack : The development stack that should be installed with laravel Modules (blade,react,vue,svelte,livewire,api)}
+    protected $signature = 'flextra:install {stack : The development stack that should be installed with laravel Modules (blade,react,vue,svelte)}
                             {--dark : Indicate that dark mode support should be installed}
                             {--pest : Indicate that Pest should be installed}
                             {--ssr : Indicates if Inertia SSR support should be installed}
@@ -84,6 +85,10 @@ final class InstallCommand extends Command implements PromptsForMissingInput
 
         if ($this->argument('stack') === 'livewire-functional') {
             return $this->installLivewireModule($this->moduleName, true);
+        }
+
+        if ($this->argument('stack') === 'api') {
+            return $this->installApiModule($this->moduleName);
         }
 
         $this->components->error('Invalid stack. Supported stacks are [react], [vue], [svelte], [livewire], [livewire-functional]  and [blade].');
@@ -217,15 +222,17 @@ final class InstallCommand extends Command implements PromptsForMissingInput
 
     /**
      * install module-inertia-react tests from stub
+     *
+     * @throws JsonException
      */
     protected function installTests(): bool
     {
         (new Filesystem)->ensureDirectoryExists(base_path('tests/Feature'));
 
         $stubStack = match ($this->argument('stack')) {
-            'api' => 'api',
             'livewire' => 'livewire-common',
             'livewire-functional' => 'livewire-common',
+            'api' => 'api-module',
             'blade' => 'blade-module',
             default => 'inertia-php',
         };
@@ -259,8 +266,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         $files = (new Filesystem)->allFiles($stubPath);
         foreach ($files as $file) {
             $contents = file_get_contents($file->getPathname());
-            $contents = str_replace('{{moduleName}}', $moduleName, $contents);
-            $contents = str_replace('{{moduleNameLower}}', strtolower($moduleName), $contents);
+            $contents = str_replace(['{{moduleName}}', '{{moduleNameLower}}'], [$moduleName, strtolower($moduleName)], $contents);
             $filesystem->put(
                 $targetPath.'/'.$file->getFilename(),
                 $contents
@@ -274,13 +280,14 @@ final class InstallCommand extends Command implements PromptsForMissingInput
     private function copyFileWithNamespace(string $moduleName, string $stubfile, string $targetfile): void
     {
         $contents = file_get_contents($stubfile);
-        $contents = str_replace('{{moduleName}}', $moduleName, $contents);
-        $contents = str_replace('{{moduleNameLower}}', strtolower($moduleName), $contents);
+        $contents = str_replace(['{{moduleName}}', '{{moduleNameLower}}'], [$moduleName, strtolower($moduleName)], $contents);
         file_put_contents($targetfile, $contents);
     }
 
     /**
      * Update the dependencies in the "package.json" file.
+     *
+     * @throws JsonException
      */
     private function updateNodePackages(callable $callback, bool $dev = true): void
     {
@@ -290,7 +297,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
 
         $configurationKey = $dev ? 'devDependencies' : 'dependencies';
 
-        $packages = json_decode(file_get_contents(base_path('package.json')), true);
+        $packages = json_decode(file_get_contents(base_path('package.json')), true, 512, JSON_THROW_ON_ERROR);
 
         $packages[$configurationKey] = $callback(
             array_key_exists($configurationKey, $packages) ? $packages[$configurationKey] : [],
@@ -301,12 +308,14 @@ final class InstallCommand extends Command implements PromptsForMissingInput
 
         file_put_contents(
             base_path('package.json'),
-            json_encode($packages, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT).PHP_EOL
+            json_encode($packages, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT).PHP_EOL
         );
     }
 
     /**
      * Update the scripts in the "package.json" file.
+     *
+     * @throws JsonException
      */
     private function updateNodeScripts(callable $callback): void
     {
@@ -314,7 +323,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
             return;
         }
 
-        $content = json_decode(file_get_contents(base_path('package.json')), true);
+        $content = json_decode(file_get_contents(base_path('package.json')), true, 512, JSON_THROW_ON_ERROR);
 
         $content['scripts'] = $callback(
             array_key_exists('scripts', $content) ? $content['scripts'] : []
@@ -322,7 +331,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
 
         file_put_contents(
             base_path('package.json'),
-            json_encode($content, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT).PHP_EOL
+            json_encode($content, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT).PHP_EOL
         );
     }
 
@@ -331,7 +340,7 @@ final class InstallCommand extends Command implements PromptsForMissingInput
      */
     private function flushNodeModules(): void
     {
-        tap(new Filesystem, function ($files): void {
+        tap(new Filesystem, static function ($files): void {
             $files->deleteDirectory(base_path('node_modules'));
 
             $files->delete(base_path('pnpm-lock.yaml'));
@@ -494,8 +503,10 @@ final class InstallCommand extends Command implements PromptsForMissingInput
 
     /**
      * Install Module Dependencies
+     *
+     * @throws JsonException
      */
-    private function installModuleDependencies(): void
+    private function installModuleDependencies(bool $api = false): void
     {
         // Check if laravel Modules installed and install it
         if (! InstalledVersions::isInstalled('nwidart/laravel-modules')) {
@@ -516,18 +527,24 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         // because it's a must-have module for breeze to live
         /* $moduleNameInput = $this->ask('Enter the name of the module');
          $this->moduleName = $moduleNameInput ?? $this->moduleName;*/
-        $this->runCommands(["php artisan module:make {$this->moduleName}"]);
+        if ($api === true) {
+            $this->runCommands(["php artisan module:make {$this->moduleName} --api"]);
+        } else {
+            $this->runCommands(["php artisan module:make {$this->moduleName}"]);
+        }
     }
 
     /**
      * Adding code to composer Extra
+     *
+     * @throws JsonException
      */
     private function addToComposer(string $parent, string $key, array $value): void
     {
         $composerJsonPath = base_path('composer.json');
 
         // Read and decode composer.json
-        $composerJson = json_decode(File::get($composerJsonPath), true);
+        $composerJson = json_decode(File::get($composerJsonPath), true, 512, JSON_THROW_ON_ERROR);
 
         // Ensure the 'extra' section exists
         if (! isset($composerJson[$parent])) {
@@ -538,15 +555,17 @@ final class InstallCommand extends Command implements PromptsForMissingInput
         $composerJson[$parent][$key] = $value;
 
         // Encode the array back to JSON and save it
-        File::put($composerJsonPath, json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        File::put($composerJsonPath, json_encode($composerJson, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     }
 
     /**
      * Determine if the given Composer package is installed.
+     *
+     * @throws JsonException
      */
     private function hasComposerPackage(string $package): bool
     {
-        $packages = json_decode(file_get_contents(base_path('composer.json')), true);
+        $packages = json_decode(file_get_contents(base_path('composer.json')), true, 512, JSON_THROW_ON_ERROR);
 
         return array_key_exists($package, $packages['require'] ?? [])
             || array_key_exists($package, $packages['require-dev'] ?? []);
