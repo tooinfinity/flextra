@@ -1,6 +1,6 @@
 # Flextra: Minimal Laravel Authentication Breeze support  nWidart Laravel Modules
 
-Laravel Authentication Breeze support with nWidart Laravel Modules with Frontend Frameworks (React, Vue, Svelte, Blade) and Tailwind CSS.
+Laravel Authentication Breeze support with nWidart Laravel Modules with Frontend Frameworks (React, Vue, Svelte, Blade,API) and Tailwind CSS.
 
 ## Project that inspired and used to build this package
 - Laravel [Breeze](https://github.com/laravel/breeze)
@@ -41,7 +41,7 @@ by default the name of the module is `Auth` but you can change it by passing the
 php artisan flextra:install [stack] --module=Authentications [--other-options]
 ```
 
-Supported stacks: **react**, **vue**, **svelte**, **blade**
+Supported stacks: **react**, **vue**, **svelte**, **blade** and **api**
 
 Options: **--typescript**, **--ssr**, **--pest**
 

@@ -1,6 +1,10 @@
 # Changelog
 
-All notable changes to `Flectra` will be documented in this file
+All notable changes to `Flextra` will be documented in this file
+
+## 1.4.0 - 2025-02-06
+
+- add feature support API stack
 
 ## 1.3.0 - 2025-01-28
 
