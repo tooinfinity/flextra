@@ -58,7 +58,7 @@ new class extends Component
 
         <div>
             <x-{{moduleNameLower}}::input-label for="update_password_password" :value="__('New Password')" />
-            <x-{{moduleNameLower}}::ext-input wire:model="password" id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+            <x-{{moduleNameLower}}::text-input wire:model="password" id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
             <x-{{moduleNameLower}}::input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 

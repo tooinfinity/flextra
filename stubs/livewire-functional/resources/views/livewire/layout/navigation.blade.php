@@ -52,9 +52,9 @@ $logout = function (Logout $logout) {
 
                         <!-- Authentication -->
                         <button wire:click="logout" class="w-full text-start">
-                            <x-dropdown-link>
+                            <x-{{moduleNameLower}}::dropdown-link>
                                 {{ __('Log Out') }}
-                            </x-dropdown-link>
+                            </x-{{moduleNameLower}}::dropdown-link>
                         </button>
                     </x-slot>
                 </x-{{moduleNameLower}}::dropdown>

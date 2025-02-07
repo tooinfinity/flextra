@@ -65,7 +65,7 @@ $updatePassword = function () {
 
         <div>
             <x-{{moduleNameLower}}::input-label for="update_password_password_confirmation" :value="__('Confirm Password')" />
-            <x-{{moduleNameLower}}::ext-input wire:model="password_confirmation" id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+            <x-{{moduleNameLower}}::text-input wire:model="password_confirmation" id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
             <x-{{moduleNameLower}}::input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
