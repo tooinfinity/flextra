@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        stack: [blade, react, vue, svelte, api]
+        stack: [blade, react, vue, svelte, api, livewire, livewire-functional]
         laravel: [11]
         args: ["", --pest, --module=Authentication]
         include:
