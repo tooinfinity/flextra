@@ -42,7 +42,7 @@ jobs:
           composer config repositories.flextra '{"type": "path", "url": "flextra"}' --file composer.json
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: 'flextra'
 
