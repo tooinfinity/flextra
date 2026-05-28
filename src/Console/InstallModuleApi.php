@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TooInfinity\Flextra\Console;
 
 use Illuminate\Filesystem\Filesystem;
@@ -10,8 +12,6 @@ trait InstallModuleApi
     /**
      * Install the API flextra stack with Laravel Modules.
      *
-     * @param $moduleName
-     * @return int|null
      * @throws JsonException
      */
     protected function installApiModule($moduleName): ?int
@@ -84,8 +84,6 @@ trait InstallModuleApi
 
     /**
      * Remove any application scaffolding that isn't needed for APIs.
-     *
-     * @return void
      */
     protected function removeScaffoldingUnnecessaryForApis(): void
     {
@@ -105,5 +103,4 @@ trait InstallModuleApi
         $files->deleteDirectory(resource_path('css'));
         $files->deleteDirectory(resource_path('js'));
     }
-
 }
